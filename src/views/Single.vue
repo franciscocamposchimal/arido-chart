@@ -96,10 +96,6 @@ export default {
       tab: 0,
       unit: "",
       time: "",
-      styleChart: {
-        width: "100%",
-        height: "100%"
-      },
       items: ["Pressure", "Temperature"],
       itemsToGraph: [
         {

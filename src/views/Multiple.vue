@@ -69,7 +69,7 @@
 </template>
 <script>
 import LineChart from "@/graphics/LineChart.js";
-// :width="300" :height="300"
+
 export default {
   name: "Single",
   components: {
@@ -102,7 +102,7 @@ export default {
           dataSets: {}
         }
       ],
-      // datos por tap de selects.
+      // datos defaults por tap de selects.
       unitsTimeToGraph: [
         {
           tag: "min",
