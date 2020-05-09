@@ -17,9 +17,9 @@
                     <v-row no-gutters justify="space-between" align="center">
                       <v-col cols="2">
                         {{ itemsToGraph[tab].status.title }}
-                        <v-icon
-                          :color="itemsToGraph[tab].status.color"
-                        >{{ itemsToGraph[tab].status.icon }}</v-icon>
+                        <v-icon :color="itemsToGraph[tab].status.color">
+                          {{ itemsToGraph[tab].status.icon }}
+                        </v-icon>
                       </v-col>
                       <v-col cols="2">
                         <v-select
@@ -70,7 +70,11 @@
                   ></line-chart>
 
                   <pre>{{ $vuetify.breakpoint.name }}</pre>
-                  <pre>{{ $vuetify.breakpoint.width }} - {{ $vuetify.breakpoint.height }}</pre>
+                  <pre
+                    >{{ $vuetify.breakpoint.width }} - {{
+                      $vuetify.breakpoint.height
+                    }}</pre
+                  >
                   <v-card-actions>
                     <v-btn text>Download</v-btn>
                   </v-card-actions>
@@ -84,167 +88,167 @@
   </v-container>
 </template>
 <script>
-import LineChart from "@/graphics/LineChart.js";
+import LineChart from '@/graphics/LineChart';
 // :width="300" :height="300"
 export default {
-  name: "Single",
+  name: 'Single',
   components: {
-    LineChart
+    LineChart,
   },
   data() {
     return {
       tab: 0,
-      unit: "",
-      time: "",
-      items: ["Pressure", "Temperature"],
+      unit: '',
+      time: '',
+      items: ['Pressure', 'Temperature'],
       itemsToGraph: [
         {
           id: 0,
-          name: "",
+          name: '',
           status: {
-            title: "Online",
-            icon: "mdi-flash",
-            color: "green"
+            title: 'Online',
+            icon: 'mdi-flash',
+            color: 'green',
           },
-          data: this.fillData(1, 5000000)
+          data: this.fillData(1, 5000000),
         },
         {
           id: 0,
-          name: "",
+          name: '',
           status: {
-            title: "Online",
-            icon: "mdi-flash",
-            color: "green"
+            title: 'Online',
+            icon: 'mdi-flash',
+            color: 'green',
           },
-          data: this.fillData(1, 1000000)
-        }
+          data: this.fillData(1, 1000000),
+        },
       ],
       unitsTimeToGraph: [
         {
-          tag: "min",
-          name: "(min) Minutes"
+          tag: 'min',
+          name: '(min) Minutes',
         },
         {
-          tag: "min",
-          name: "(min) Minutes"
-        }
+          tag: 'min',
+          name: '(min) Minutes',
+        },
       ],
       unitsTimeToSelect: [
         {
-          tag: "min",
-          name: "(min) Minutes"
+          tag: 'min',
+          name: '(min) Minutes',
         },
         {
-          tag: "seg",
-          name: "(s) Seconds"
+          tag: 'seg',
+          name: '(s) Seconds',
         },
         {
-          tag: "hr",
-          name: "(hr) Hours"
-        }
+          tag: 'hr',
+          name: '(hr) Hours',
+        },
       ],
       unitToGraph: [
         {
-          tag: "PSI",
-          name: "(PSI) Pounds per square inch"
+          tag: 'PSI',
+          name: '(PSI) Pounds per square inch',
         },
         {
-          tag: "ºC",
-          name: "(ºC) Celsius"
-        }
+          tag: 'ºC',
+          name: '(ºC) Celsius',
+        },
       ],
       unitsToSelect: [
         [
           {
-            tag: "PSI",
-            name: "(PSI) Pounds per square inch"
+            tag: 'PSI',
+            name: '(PSI) Pounds per square inch',
           },
           {
-            tag: "PA",
-            name: "(PA) Pascal"
+            tag: 'PA',
+            name: '(PA) Pascal',
           },
           {
-            tag: "MPa",
-            name: "(MPa) Megapascal"
-          }
+            tag: 'MPa',
+            name: '(MPa) Megapascal',
+          },
         ],
         [
           {
-            tag: "ºC",
-            name: "(ºC) Celsius"
+            tag: 'ºC',
+            name: '(ºC) Celsius',
           },
           {
-            tag: "ºF",
-            name: "(ºF) Fahrenheit"
-          }
-        ]
+            tag: 'ºF',
+            name: '(ºF) Fahrenheit',
+          },
+        ],
       ],
       tabsSelect: [
         [
           {
             id: 1,
-            name: "Sensor P1",
+            name: 'Sensor P1',
             status: {
-              title: "Online",
-              icon: "mdi-flash",
-              color: "green"
+              title: 'Online',
+              icon: 'mdi-flash',
+              color: 'green',
             },
-            data: this.fillData(1, 5000000)
+            data: this.fillData(1, 5000000),
           },
           {
             id: 2,
-            name: "Sensor P2",
+            name: 'Sensor P2',
             status: {
-              title: "Online",
-              icon: "mdi-flash",
-              color: "green"
+              title: 'Online',
+              icon: 'mdi-flash',
+              color: 'green',
             },
-            data: this.fillData(1, 5000000)
+            data: this.fillData(1, 5000000),
           },
           {
             id: 3,
-            name: "Sensor P3",
+            name: 'Sensor P3',
             status: {
-              title: "Offline",
-              icon: "mdi-flash-alert",
-              color: "red"
+              title: 'Offline',
+              icon: 'mdi-flash-alert',
+              color: 'red',
             },
-            data: this.fillData(1, 5000000)
-          }
+            data: this.fillData(1, 5000000),
+          },
         ],
         [
           {
             id: 1,
-            name: "Sensor T1",
+            name: 'Sensor T1',
             status: {
-              title: "Offline",
-              icon: "mdi-flash-alert",
-              color: "red"
+              title: 'Offline',
+              icon: 'mdi-flash-alert',
+              color: 'red',
             },
-            data: this.fillData(1, 5000000)
+            data: this.fillData(1, 5000000),
           },
           {
             id: 2,
-            name: "Sensor T2",
+            name: 'Sensor T2',
             status: {
-              title: "Online",
-              icon: "mdi-flash",
-              color: "green"
+              title: 'Online',
+              icon: 'mdi-flash',
+              color: 'green',
             },
-            data: this.fillData(1, 5000000)
+            data: this.fillData(1, 5000000),
           },
           {
             id: 3,
-            name: "Sensor T3",
+            name: 'Sensor T3',
             status: {
-              title: "Offline",
-              icon: "mdi-flash-alert",
-              color: "red"
+              title: 'Offline',
+              icon: 'mdi-flash-alert',
+              color: 'red',
             },
-            data: this.fillData(1, 5000000)
-          }
-        ]
-      ]
+            data: this.fillData(1, 5000000),
+          },
+        ],
+      ],
     };
   },
   computed: {
@@ -258,32 +262,32 @@ export default {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: `Time (${this.time})`
+                labelString: `Time (${this.time})`,
               },
               ticks: {
                 min: 0,
                 max: 30,
-                stepSize: 1
-              }
-            }
+                stepSize: 1,
+              },
+            },
           ],
           yAxes: [
             {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: this.unit
+                labelString: this.unit,
               },
               ticks: {
                 min: 100,
                 max: 500,
-                stepSize: 100
-              }
-            }
-          ]
-        }
+                stepSize: 100,
+              },
+            },
+          ],
+        },
       };
-    }
+    },
   },
   methods: {
     itemSelected({ status }) {
@@ -304,19 +308,19 @@ export default {
         labels: this.timeToLabel(hours),
         datasets: [
           {
-            label: "data uno",
+            label: 'data uno',
             backgroundColor: hexColor,
             borderColor: hexColor,
             fill: false,
-            data: this.getRandomInt(hours, 100, 500)
-          }
-        ]
+            data: this.getRandomInt(hours, 100, 500),
+          },
+        ],
       };
     },
     getRandomInt(hours, min, max) {
       const toMinutes = Math.floor(hours * 60);
       const timeList = Array.from(Array(toMinutes), () =>
-        Math.floor(Math.random() * (max - min) + min)
+        Math.floor(Math.random() * (max - min) + min),
       );
       // console.log(timeList);
       return timeList;
@@ -330,29 +334,28 @@ export default {
     },
     getRandomHexColor(colorMax) {
       // 1000000
-      let n = (Math.random() * 0xfffff * colorMax).toString(16);
+      const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
-    }
+    },
   },
   watch: {
     tab(tabSelect) {
-      console.log("tabSelect");
+      console.log('tabSelect');
       // const forTab = this.tabsSelect[tabSelect];
       // this.itemsToGraph[tabSelect] = forTab[tabSelect];
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
       // console.log("tabSelect ", this.itemsToGraph);
       // console.log();
-    }
+    },
   },
   beforeMount() {
-    const forTabOne = this.tabsSelect[0];
-    const forTabTwo = this.tabsSelect[1];
-    this.itemsToGraph[0] = forTabOne[0];
-    this.itemsToGraph[1] = forTabTwo[0];
+    const [[forTabOne], [forTabTwo]] = this.tabsSelect;
+    this.itemsToGraph[0] = forTabOne;
+    this.itemsToGraph[1] = forTabTwo;
     this.unit = this.unitToGraph[this.tab].tag;
     this.time = this.unitsTimeToGraph[this.tab].tag;
     // console.log('beforeMount', this.itemsToGraph);
-  }
+  },
 };
 </script>

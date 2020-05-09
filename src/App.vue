@@ -8,16 +8,17 @@
 </template>
 
 <script>
-import Navigation from "@/components/commons/NavBar";
+import Navigation from '@/components/commons/NavBar.vue';
+
 export default {
-  name: "App",
+  name: 'App',
 
   components: {
-    Navigation
+    Navigation,
   },
 
   data: () => ({
     //
-  })
+  }),
 };
 </script>

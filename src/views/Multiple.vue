@@ -17,9 +17,9 @@
                     <v-row no-gutters justify="space-between" align="center">
                       <v-col cols="2">
                         {{ itemsToGraph[tab].status.title }}
-                        <v-icon
-                          :color="itemsToGraph[tab].status.color"
-                        >{{ itemsToGraph[tab].status.icon }}</v-icon>
+                        <v-icon :color="itemsToGraph[tab].status.color">
+                          {{ itemsToGraph[tab].status.icon }}
+                        </v-icon>
                       </v-col>
 
                       <v-col cols="2">
@@ -51,10 +51,17 @@
                     </v-row>
                   </v-card-text>
 
-                  <line-chart :chart-data="itemsToGraph[tab].dataSets" :options="optionsChart"></line-chart>
+                  <line-chart
+                    :chart-data="itemsToGraph[tab].dataSets"
+                    :options="optionsChart"
+                  ></line-chart>
 
                   <pre>{{ $vuetify.breakpoint.name }}</pre>
-                  <pre>{{ $vuetify.breakpoint.width }} - {{ $vuetify.breakpoint.height }}</pre>
+                  <pre
+                    >{{ $vuetify.breakpoint.width }} - {{
+                      $vuetify.breakpoint.height
+                    }}</pre
+                  >
                   <v-card-actions>
                     <v-btn text>Download</v-btn>
                   </v-card-actions>
@@ -68,124 +75,124 @@
   </v-container>
 </template>
 <script>
-import LineChart from "@/graphics/LineChart.js";
+import LineChart from '@/graphics/LineChart';
 
 export default {
-  name: "Single",
+  name: 'Single',
   components: {
-    LineChart
+    LineChart,
   },
   data() {
     return {
       tab: 0,
-      unit: "",
-      time: "",
-      items: ["Pressure", "Temperature"],
+      unit: '',
+      time: '',
+      items: ['Pressure', 'Temperature'],
       // datos por tab de grafica.
       itemsToGraph: [
         {
-          name: "Pressure sensors",
+          name: 'Pressure sensors',
           status: {
-            title: "Online",
-            icon: "mdi-flash",
-            color: ""
+            title: 'Online',
+            icon: 'mdi-flash',
+            color: '',
           },
-          dataSets: {}
+          dataSets: {},
         },
         {
-          name: "Temperature sensors",
+          name: 'Temperature sensors',
           status: {
-            title: "Online",
-            icon: "mdi-flash",
-            color: ""
+            title: 'Online',
+            icon: 'mdi-flash',
+            color: '',
           },
-          dataSets: {}
-        }
+          dataSets: {},
+        },
       ],
       // datos defaults por tap de selects.
       unitsTimeToGraph: [
         {
-          tag: "min",
-          name: "(min) Minutes"
+          tag: 'min',
+          name: '(min) Minutes',
         },
         {
-          tag: "min",
-          name: "(min) Minutes"
-        }
+          tag: 'min',
+          name: '(min) Minutes',
+        },
       ],
       unitToGraph: [
         {
-          tag: "PSI",
-          name: "(PSI) Pounds per square inch"
+          tag: 'PSI',
+          name: '(PSI) Pounds per square inch',
         },
         {
-          tag: "ºC",
-          name: "(ºC) Celsius"
-        }
+          tag: 'ºC',
+          name: '(ºC) Celsius',
+        },
       ],
       // select para tiempo.
       unitsTimeToSelect: [
         {
-          tag: "min",
-          name: "(min) Minutes"
+          tag: 'min',
+          name: '(min) Minutes',
         },
         {
-          tag: "seg",
-          name: "(s) Seconds"
+          tag: 'seg',
+          name: '(s) Seconds',
         },
         {
-          tag: "hr",
-          name: "(hr) Hours"
-        }
+          tag: 'hr',
+          name: '(hr) Hours',
+        },
       ],
       // select para unidades de presion o temp.
       unitsToSelect: [
         [
           {
-            tag: "PSI",
-            name: "(PSI) Pounds per square inch"
+            tag: 'PSI',
+            name: '(PSI) Pounds per square inch',
           },
           {
-            tag: "PA",
-            name: "(PA) Pascal"
+            tag: 'PA',
+            name: '(PA) Pascal',
           },
           {
-            tag: "MPa",
-            name: "(MPa) Megapascal"
-          }
+            tag: 'MPa',
+            name: '(MPa) Megapascal',
+          },
         ],
         [
           {
-            tag: "ºC",
-            name: "(ºC) Celsius"
+            tag: 'ºC',
+            name: '(ºC) Celsius',
           },
           {
-            tag: "ºF",
-            name: "(ºF) Fahrenheit"
-          }
-        ]
+            tag: 'ºF',
+            name: '(ºF) Fahrenheit',
+          },
+        ],
       ],
-      //datos a graficar por tab
+      // datos a graficar por tab
       tabsSelect: [
         {
           labels: this.timeToLabel(1),
           datasets: [
-            this.fillData("SP1", 1, 5000000),
-            this.fillData("SP2", 1, 4000000),
-            this.fillData("SP3", 1, 3000000),
-            this.fillData("SP4", 1, 2000000),
-            this.fillData("SP5", 1, 1000000)
-          ]
+            this.fillData('SP1', 1, 5000000),
+            this.fillData('SP2', 1, 4000000),
+            this.fillData('SP3', 1, 3000000),
+            this.fillData('SP4', 1, 2000000),
+            this.fillData('SP5', 1, 1000000),
+          ],
         },
         {
           labels: this.timeToLabel(1),
           datasets: [
-            this.fillData("ST1", 1, 5000000),
-            this.fillData("ST2", 1, 6000000),
-            this.fillData("ST3", 1, 7000000)
-          ]
-        }
-      ]
+            this.fillData('ST1', 1, 5000000),
+            this.fillData('ST2', 1, 6000000),
+            this.fillData('ST3', 1, 7000000),
+          ],
+        },
+      ],
     };
   },
   computed: {
@@ -200,32 +207,32 @@ export default {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: `Time (${this.time})`
+                labelString: `Time (${this.time})`,
               },
               ticks: {
                 min: 0,
                 max: 30,
-                stepSize: 1
-              }
-            }
+                stepSize: 1,
+              },
+            },
           ],
           yAxes: [
             {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: this.unit
+                labelString: this.unit,
               },
               ticks: {
                 min: 100,
                 max: 500,
-                stepSize: 100
-              }
-            }
-          ]
-        }
+                stepSize: 100,
+              },
+            },
+          ],
+        },
       };
-    }
+    },
   },
   methods: {
     // evento para el cambio de unidad
@@ -246,13 +253,13 @@ export default {
         backgroundColor: hexColor,
         borderColor: hexColor,
         fill: false,
-        data: this.getRandomInt(hours, 100, 500)
+        data: this.getRandomInt(hours, 100, 500),
       };
     },
     getRandomInt(hours, min, max) {
       const toMinutes = Math.floor(hours * 60);
       const timeList = Array.from(Array(toMinutes), () =>
-        Math.floor(Math.random() * (max - min) + min)
+        Math.floor(Math.random() * (max - min) + min),
       );
       return timeList;
     },
@@ -264,16 +271,16 @@ export default {
     },
     getRandomHexColor(colorMax) {
       // 1000000
-      let n = (Math.random() * 0xfffff * colorMax).toString(16);
+      const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
-    }
+    },
   },
   watch: {
     // watcher para el cambio de tab
     tab(tabSelect) {
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
-    }
+    },
   },
   beforeMount() {
     /* 
@@ -286,6 +293,6 @@ export default {
     this.itemsToGraph[1].dataSets = forTabTwo;
     this.unit = this.unitToGraph[this.tab].tag;
     this.time = this.unitsTimeToGraph[this.tab].tag;
-  }
+  },
 };
 </script>

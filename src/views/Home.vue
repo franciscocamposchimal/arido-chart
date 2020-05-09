@@ -20,11 +20,19 @@
                 ></v-select>
               </v-col>
               <v-col cols="3">
-                <v-select :items="['minutos', 'segundos', 'hora']" label="Tiempo" dense outlined></v-select>
+                <v-select
+                  :items="['minutos', 'segundos', 'hora']"
+                  label="Tiempo"
+                  dense
+                  outlined
+                ></v-select>
               </v-col>
             </v-row>
             <div class="small">
-              <line-chart :chart-data="fillData(1, 1000000)" :options="options('sensor 1')"></line-chart>
+              <line-chart
+                :chart-data="fillData(1, 1000000)"
+                :options="options('sensor 1')"
+              ></line-chart>
             </div>
           </v-card-text>
           <v-card-actions>
@@ -40,7 +48,10 @@
               <v-icon color="red">mdi-flash-alert</v-icon>
             </div>
             <div class="small">
-              <line-chart :chart-data="fillData(1, 999999)" :options="options('sensor 2')"></line-chart>
+              <line-chart
+                :chart-data="fillData(1, 999999)"
+                :options="options('sensor 2')"
+              ></line-chart>
             </div>
           </v-card-text>
           <v-card-actions>
@@ -59,7 +70,10 @@
             </div>
             <p class="display-1 text--primary">Sensor 3</p>
             <div class="small">
-              <line-chart :chart-data="fillData(1, 5000000)" :options="options('sensor 3')"></line-chart>
+              <line-chart
+                :chart-data="fillData(1, 5000000)"
+                :options="options('sensor 3')"
+              ></line-chart>
             </div>
           </v-card-text>
           <v-card-actions>
@@ -74,16 +88,16 @@
 <script>
 // @ is an alias to /src
 // mdi-flash-alert
-import LineChart from "@/graphics/LineChart.js";
+import LineChart from '@/graphics/LineChart';
 
 export default {
-  name: "Home",
+  name: 'Home',
   components: {
-    LineChart
+    LineChart,
   },
   data() {
     return {
-      datacollection: {}
+      datacollection: {},
     };
   },
   methods: {
@@ -93,13 +107,13 @@ export default {
         labels: this.time(hours),
         datasets: [
           {
-            label: "data uno",
+            label: 'data uno',
             backgroundColor: hexColor,
             borderColor: hexColor,
             fill: false,
-            data: this.getRandomInt(hours, 100, 500)
-          }
-        ]
+            data: this.getRandomInt(hours, 100, 500),
+          },
+        ],
       };
     },
     options(title) {
@@ -108,7 +122,7 @@ export default {
         maintainAspectRatio: false,
         title: {
           display: true,
-          text: title
+          text: title,
         },
         scales: {
           xAxes: [
@@ -116,36 +130,36 @@ export default {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: "Tiempo (min)"
+                labelString: 'Tiempo (min)',
               },
               ticks: {
                 min: 15,
                 max: 30,
-                stepSize: 1
-              }
-            }
+                stepSize: 1,
+              },
+            },
           ],
           yAxes: [
             {
               display: true,
               scaleLabel: {
                 display: true,
-                labelString: "PSI"
+                labelString: 'PSI',
               },
               ticks: {
                 min: 100,
                 max: 500,
-                stepSize: 100
-              }
-            }
-          ]
-        }
+                stepSize: 100,
+              },
+            },
+          ],
+        },
       };
     },
     getRandomInt(hours, min, max) {
       const toMinutes = Math.floor(hours * 60);
       const timeList = Array.from(Array(toMinutes), () =>
-        Math.floor(Math.random() * (max - min) + min)
+        Math.floor(Math.random() * (max - min) + min),
       );
       // console.log(timeList);
       return timeList;
@@ -159,9 +173,9 @@ export default {
     },
     getRandomHexColor(colorMax) {
       // 1000000
-      let n = (Math.random() * 0xfffff * colorMax).toString(16);
+      const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
-    }
-  }
+    },
+  },
 };
 </script>
