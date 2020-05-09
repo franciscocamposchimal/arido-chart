@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { Line, mixins } from 'vue-chartjs';
+
 const { reactiveProp } = mixins;
 let canvasWidth = 0;
 let canvasHeight = 0;
@@ -9,7 +10,8 @@ export default {
 	props: [ 'chartData', 'options' ],
 	watch: {
 		options: {
-			handler(newOption, oldOption) {
+			handler(newOption) {
+				console.log('newOption');
 				this.$data._chart.destroy();
 				this.renderChart(this.chartData, newOption);
 
@@ -23,7 +25,15 @@ export default {
 				// console.log(this.$refs.canvas.style.cssText);
 			},
 			deep: true
-		}
+		},
+		/* chartData: {
+			handler(newData) {
+				console.log('newData');
+				this.$data._chart.destroy();
+				this.renderChart(newData, this.option);
+			},
+			deep: true
+		} */
 	},
 	mounted() {
 		this.renderChart(this.chartData, this.options);

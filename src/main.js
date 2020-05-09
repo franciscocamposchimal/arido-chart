@@ -1,3 +1,5 @@
+import VueLodash from 'vue-lodash';
+import lodash from 'lodash';
 import Vue from 'vue';
 import App from './App.vue';
 import './registerServiceWorker';
@@ -8,6 +10,8 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
+
+Vue.use(VueLodash, { lodash });
 
 new Vue({
   router,

@@ -9,7 +9,7 @@
         <v-col cols="2">
           <v-select
             v-model="unitModelDefault"
-            :items="unitsToGraph"
+            :items="unitSelect"
             label="Units"
             dense
             outlined
@@ -22,7 +22,7 @@
         <v-col cols="2">
           <v-select
             v-model="unitTimeModelDefault"
-            :items="unitsTimeToGraph"
+            :items="unitTimeSelect"
             label="Time"
             dense
             outlined
@@ -48,9 +48,9 @@
 <script>
 import LineChart from '@/graphics/LineChart';
 
-const statusKeys = ['title', 'icon', 'color'];
+// const statusKeys = ['title', 'icon', 'color'];
 export default {
-  name: 'Line',
+  name: 'LineCustom',
   components: {
     LineChart,
   },
@@ -70,7 +70,7 @@ export default {
     defaultStatus: {
       type: Object,
       required: true,
-      validator: (value) => statusKeys.every((key) => key in value),
+      // validator: (value) => statusKeys.every((key) => key in value),
       default: () => {
         return {
           title: 'Online',
@@ -88,39 +88,53 @@ export default {
       type: Object,
       required: true,
     },
+    // data para los select
+    unitSelect: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    unitTimeSelect: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
+    // table
+    responsiveChart: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
   data() {
     return {
       // values for reactive options chart
       unit: '',
       time: '',
+      responsive: true,
       // selected default unit
       unitModelDefault: {},
       // selected default time
       unitTimeModelDefault: {},
-      // array to unit selects
-      unitsToGraph: [],
-      // array to time selects
-      unitsTimeToGraph: [],
     };
   },
   methods: {
     // evento para el cambio de unidad
-    unitSelected(unit) {
-      this.unit = unit.tag;
-      this.$emit('unitSelected', this.unitModelDefault);
+    unitSelected({ tag }) {
+      this.unit = tag;
+      // this.$emit('unitSelected', this.unitModelDefault);
     },
     // evento para el cambio de tiempo
-    timeSelected(time) {
-      this.time = time.tag;
-      this.$emit('unitsTimeSelected', this.unitTimeModelDefault);
+    timeSelected({ tag }) {
+      this.time = tag;
+      // this.$emit('unitsTimeSelected', this.unitTimeModelDefault);
     },
   },
   computed: {
     // opciones de vista de la frafica
     optionsChart() {
       return {
-        responsive: true,
+        responsive: this.responsive,
         maintainAspectRatio: false,
         scales: {
           xAxes: [
@@ -155,13 +169,20 @@ export default {
       };
     },
   },
+  mounted() {
+    this.responsive = true;
+    this.unit = this.unitModelToSelect.tag;
+    this.time = this.unitsTimeModelToSelect.tag;
+    this.unitModelDefault = this.unitModelToSelect;
+    this.unitTimeModelDefault = this.unitsTimeModelToSelect;
+  },
   watch: {
-    // watcher para inicializar los valores de los selects
-    unitModelToSelect(unitInit) {
-      this.unitModelDefault = unitInit;
-    },
-    unitsTimeModelToSelect(timeInit) {
-      this.unitTimeModelDefault = timeInit;
+    responsiveChart() {
+      if (this.responsive) {
+        this.responsive = false;
+        this.responsive = true;
+      }
+      this.responsive = true;
     },
   },
 };

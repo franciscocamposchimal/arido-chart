@@ -12,16 +12,35 @@
       <!-- Contenedor de los tabs -->
       <v-tabs-items v-model="tab">
         <!-- contenidos del tab -->
-        <v-tab-item v-for="(item, index) in tabsSelect" :key="`${index}-tab`">
+        <v-tab-item
+          v-for="(itemTab, index) in tabsSelect"
+          :key="`${index}-tab`"
+        >
           <v-container class="grey lighten-5" :fluid="false">
-            <v-row justify="space-around">
-              <v-col cols="12">
-                <Line
-                  :chartDataToGraph="itemsToGraph[tab].dataSets"
-                  :defaultStatus="itemsToGraph[tab].status"
+            <!-- Pagination -->
+            <div class="text-center">
+              <v-pagination
+                v-if="itemTab.length > 2"
+                v-model="page[tab]"
+                :length="Math.floor(itemTab.length / 2) + 1"
+                circle
+              ></v-pagination>
+            </div>
+            <v-row justify="center">
+              <v-col
+                cols="6"
+                v-for="(chart, idx) in chunkGraphs(itemTab, page[tab] - 1)"
+                :key="`${idx}-chart`"
+              >
+                <cstm-line
+                  :chartDataToGraph="chart.dataSets"
+                  :defaultStatus="chart.status"
                   :unitModelToSelect="unitToGraph[tab]"
                   :unitsTimeModelToSelect="unitsTimeToGraph[tab]"
-                ></Line>
+                  :unitSelect="unitsToSelect[tab]"
+                  :unitTimeSelect="unitsTimeToSelect"
+                  :responsiveChart="responsiveCharts"
+                ></cstm-line>
               </v-col>
             </v-row>
           </v-container>
@@ -31,38 +50,19 @@
   </v-container>
 </template>
 <script>
-import Line from '@/graphics/Line.vue';
+import LineCustom from '@/graphics/LineCustom.vue';
 
 export default {
   name: 'All',
   components: {
-    Line,
+    'cstm-line': LineCustom,
   },
   data() {
     return {
       tab: 0,
+      page: [1, 1],
       items: ['Pressure', 'Temperature'],
-      // datos por tab de grafica.
-      itemsToGraph: [
-        {
-          name: 'Pressure sensors',
-          status: {
-            title: 'Online',
-            icon: 'mdi-flash',
-            color: '',
-          },
-          dataSets: {},
-        },
-        {
-          name: 'Temperature sensors',
-          status: {
-            title: 'Online',
-            icon: 'mdi-flash',
-            color: '',
-          },
-          dataSets: {},
-        },
-      ],
+      responsiveCharts: true,
       // datos por tap de selects.
       unitsTimeToGraph: [
         {
@@ -128,76 +128,45 @@ export default {
       ],
       // datos a graficar por tab
       tabsSelect: [
-        {
-          labels: this.timeToLabel(1),
-          datasets: [
-            this.fillData('SP1', 1, 5000000),
-            this.fillData('SP2', 1, 4000000),
-            this.fillData('SP3', 1, 3000000),
-            this.fillData('SP4', 1, 2000000),
-            this.fillData('SP5', 1, 1000000),
-          ],
-        },
-        {
-          labels: this.timeToLabel(1),
-          datasets: [
-            this.fillData('ST1', 1, 5000000),
-            this.fillData('ST2', 1, 6000000),
-            this.fillData('ST3', 1, 7000000),
-          ],
-        },
+        [
+          ...Array.from(Array(3), (x, idx) => {
+            return {
+              status: {
+                title: `SP${idx + 1}`,
+                icon: 'mdi-flash',
+                color: idx % 2 ? 'green' : 'red',
+              },
+              dataSets: {
+                labels: this.timeToLabel(1),
+                datasets: [this.fillData(`SP${idx + 1}`, 1, 5000000)],
+              },
+            };
+          }),
+        ],
+        [
+          ...Array.from(Array(5), (x, idx) => {
+            return {
+              status: {
+                title: `ST${idx + 1}`,
+                icon: 'mdi-flash',
+                color: idx % 2 ? 'green' : 'red',
+              },
+              dataSets: {
+                labels: this.timeToLabel(1),
+                datasets: [this.fillData(`ST${idx + 1}`, 1, 5000000)],
+              },
+            };
+          }),
+        ],
       ],
     };
   },
-  computed: {
-    // opciones de vista de la frafica
-    optionsChart() {
-      return {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          xAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: `Time (${this.time})`,
-              },
-              ticks: {
-                min: 0,
-                max: 30,
-                stepSize: 1,
-              },
-            },
-          ],
-          yAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: this.unit,
-              },
-              ticks: {
-                min: 100,
-                max: 500,
-                stepSize: 100,
-              },
-            },
-          ],
-        },
-      };
-    },
-  },
   methods: {
-    // evento para el cambio de unidad
-    unitSelected(unit) {
-      this.unit = unit.tag;
-      // console.log(this.optionsChart);
-    },
-    // evento para el cambio de tiempo
-    timeSelected(time) {
-      this.time = time.tag;
-      // console.log(this.optionsChart);
+    // dividir el arreglo en grupos de a 2 y sobrantes
+    chunkGraphs(charts, page) {
+      const chunkIt = this.lodash.chunk(charts, 2);
+      // console.log(charts);
+      return chunkIt[page];
     },
     // datos random
     fillData(name, hours, colorMax) {
@@ -231,22 +200,9 @@ export default {
   },
   watch: {
     // watcher para el cambio de tab
-    tab(tabSelect) {
-      this.unit = this.unitToGraph[tabSelect].tag;
-      this.time = this.unitsTimeToGraph[tabSelect].tag;
+    tab() {
+      this.responsiveCharts = !this.responsiveCharts;
     },
-  },
-  beforeMount() {
-    /* 
-       Acciones para variables de inicio 
-       antes de que el componente sea montado a la vista.
-    */
-    const forTabOne = this.tabsSelect[0];
-    const forTabTwo = this.tabsSelect[1];
-    this.itemsToGraph[0].dataSets = forTabOne;
-    this.itemsToGraph[1].dataSets = forTabTwo;
-    this.unit = this.unitToGraph[this.tab].tag;
-    this.time = this.unitsTimeToGraph[this.tab].tag;
   },
 };
 </script>

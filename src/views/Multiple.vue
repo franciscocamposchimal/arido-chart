@@ -287,8 +287,7 @@ export default {
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
-    const forTabOne = this.tabsSelect[0];
-    const forTabTwo = this.tabsSelect[1];
+    const [forTabOne, forTabTwo] = this.tabsSelect;
     this.itemsToGraph[0].dataSets = forTabOne;
     this.itemsToGraph[1].dataSets = forTabTwo;
     this.unit = this.unitToGraph[this.tab].tag;

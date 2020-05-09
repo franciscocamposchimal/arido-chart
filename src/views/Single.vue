@@ -26,12 +26,12 @@
                           v-model="itemsToGraph[tab]"
                           :items="item"
                           label="Sensors"
-                          dense
-                          outlined
                           item-text="name"
                           item-value="id"
                           return-object
                           @change="itemSelected"
+                          outlined
+                          dense
                         ></v-select>
                       </v-col>
                       <v-col cols="2">
@@ -64,17 +64,10 @@
                   </v-card-text>
 
                   <line-chart
-                    :ref="`tabSelectted`"
                     :chart-data="itemsToGraph[tab].data"
                     :options="optionsChart"
                   ></line-chart>
 
-                  <pre>{{ $vuetify.breakpoint.name }}</pre>
-                  <pre
-                    >{{ $vuetify.breakpoint.width }} - {{
-                      $vuetify.breakpoint.height
-                    }}</pre
-                  >
                   <v-card-actions>
                     <v-btn text>Download</v-btn>
                   </v-card-actions>
@@ -101,27 +94,20 @@ export default {
       unit: '',
       time: '',
       items: ['Pressure', 'Temperature'],
+      sensorsNames: [],
       itemsToGraph: [
-        {
-          id: 0,
-          name: '',
-          status: {
-            title: 'Online',
-            icon: 'mdi-flash',
-            color: 'green',
-          },
-          data: this.fillData(1, 5000000),
-        },
-        {
-          id: 0,
-          name: '',
-          status: {
-            title: 'Online',
-            icon: 'mdi-flash',
-            color: 'green',
-          },
-          data: this.fillData(1, 1000000),
-        },
+        ...Array.from(Array(2), () => {
+          return {
+            id: 0,
+            name: '',
+            status: {
+              title: '',
+              icon: 'mdi-flash',
+              color: '',
+            },
+            data: this.fillData(1, 5000000),
+          };
+        }),
       ],
       unitsTimeToGraph: [
         {
@@ -185,68 +171,32 @@ export default {
       ],
       tabsSelect: [
         [
-          {
-            id: 1,
-            name: 'Sensor P1',
-            status: {
-              title: 'Online',
-              icon: 'mdi-flash',
-              color: 'green',
-            },
-            data: this.fillData(1, 5000000),
-          },
-          {
-            id: 2,
-            name: 'Sensor P2',
-            status: {
-              title: 'Online',
-              icon: 'mdi-flash',
-              color: 'green',
-            },
-            data: this.fillData(1, 5000000),
-          },
-          {
-            id: 3,
-            name: 'Sensor P3',
-            status: {
-              title: 'Offline',
-              icon: 'mdi-flash-alert',
-              color: 'red',
-            },
-            data: this.fillData(1, 5000000),
-          },
+          ...Array.from(Array(3), (x, idx) => {
+            return {
+              id: idx + 1,
+              name: `Sensor P${idx + 1}`,
+              status: {
+                title: `SP${idx + 1}`,
+                icon: 'mdi-flash',
+                color: idx % 2 ? 'green' : 'red',
+              },
+              data: this.fillData(1, 5000000),
+            };
+          }),
         ],
         [
-          {
-            id: 1,
-            name: 'Sensor T1',
-            status: {
-              title: 'Offline',
-              icon: 'mdi-flash-alert',
-              color: 'red',
-            },
-            data: this.fillData(1, 5000000),
-          },
-          {
-            id: 2,
-            name: 'Sensor T2',
-            status: {
-              title: 'Online',
-              icon: 'mdi-flash',
-              color: 'green',
-            },
-            data: this.fillData(1, 5000000),
-          },
-          {
-            id: 3,
-            name: 'Sensor T3',
-            status: {
-              title: 'Offline',
-              icon: 'mdi-flash-alert',
-              color: 'red',
-            },
-            data: this.fillData(1, 5000000),
-          },
+          ...Array.from(Array(5), (x, idx) => {
+            return {
+              id: idx + 1,
+              name: `Sensor P${idx + 1}`,
+              status: {
+                title: `ST${idx + 1}`,
+                icon: 'mdi-flash',
+                color: idx % 2 ? 'green' : 'red',
+              },
+              data: this.fillData(1, 5000000),
+            };
+          }),
         ],
       ],
     };
@@ -290,9 +240,8 @@ export default {
     },
   },
   methods: {
-    itemSelected({ status }) {
-      // console.log(status);
-      this.itemsToGraph[this.tab].status = { ...status };
+    itemSelected(graph) {
+      this.itemsToGraph[this.tab] = graph;
     },
     unitSelected(unit) {
       this.unit = unit.tag;
@@ -340,22 +289,20 @@ export default {
   },
   watch: {
     tab(tabSelect) {
-      console.log('tabSelect');
-      // const forTab = this.tabsSelect[tabSelect];
-      // this.itemsToGraph[tabSelect] = forTab[tabSelect];
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
-      // console.log("tabSelect ", this.itemsToGraph);
-      // console.log();
     },
   },
   beforeMount() {
+    /* 
+       Acciones para variables de inicio 
+       antes de que el componente sea montado a la vista.
+    */
     const [[forTabOne], [forTabTwo]] = this.tabsSelect;
     this.itemsToGraph[0] = forTabOne;
     this.itemsToGraph[1] = forTabTwo;
     this.unit = this.unitToGraph[this.tab].tag;
     this.time = this.unitsTimeToGraph[this.tab].tag;
-    // console.log('beforeMount', this.itemsToGraph);
   },
 };
 </script>
