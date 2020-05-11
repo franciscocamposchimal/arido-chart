@@ -11,7 +11,7 @@ export default {
 	watch: {
 		options: {
 			handler(newOption) {
-				console.log('newOption');
+				// console.log('newOption');
 				this.$data._chart.destroy();
 				this.renderChart(this.chartData, newOption);
 

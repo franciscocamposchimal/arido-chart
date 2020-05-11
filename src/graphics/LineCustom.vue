@@ -6,30 +6,43 @@
           {{ defaultStatus.title }}
           <v-icon :color="defaultStatus.color">{{ defaultStatus.icon }}</v-icon>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="2" v-if="sensorsSelect.length > 0">
           <v-select
-            v-model="unitModelDefault"
-            :items="unitSelect"
-            label="Units"
-            dense
-            outlined
+            label="Sensors"
+            v-model="sensorModelDefault"
+            :items="sensorsSelect"
             item-text="name"
-            item-value="tag"
+            item-value="id"
+            @change="sensorSelected"
             return-object
-            @change="unitSelected"
+            outlined
+            dense
           ></v-select>
         </v-col>
-        <v-col cols="2">
+        <v-col :cols="sensorsSelect.length > 0 ? 2 : 3">
           <v-select
-            v-model="unitTimeModelDefault"
-            :items="unitTimeSelect"
-            label="Time"
-            dense
-            outlined
+            label="Units"
+            v-model="unitModelDefault"
+            :items="unitSelect"
             item-text="name"
             item-value="tag"
+            @change="unitSelected"
             return-object
+            outlined
+            dense
+          ></v-select>
+        </v-col>
+        <v-col :cols="sensorsSelect.length > 0 ? 2 : 3">
+          <v-select
+            label="Time"
+            v-model="unitTimeModelDefault"
+            :items="unitTimeSelect"
+            item-text="name"
+            item-value="tag"
             @change="timeSelected"
+            return-object
+            outlined
+            dense
           ></v-select>
         </v-col>
       </v-row>
@@ -80,6 +93,9 @@ export default {
       },
     },
     // model de los items de los selects
+    sensorModelToSelect: {
+      type: Object,
+    },
     unitModelToSelect: {
       type: Object,
       required: true,
@@ -89,6 +105,10 @@ export default {
       required: true,
     },
     // data para los select
+    sensorsSelect: {
+      type: Array,
+      default: () => [],
+    },
     unitSelect: {
       type: Array,
       required: true,
@@ -112,6 +132,8 @@ export default {
       unit: '',
       time: '',
       responsive: true,
+      // selected defautl sensot
+      sensorModelDefault: {},
       // selected default unit
       unitModelDefault: {},
       // selected default time
@@ -119,6 +141,11 @@ export default {
     };
   },
   methods: {
+    // evento para el cambio de unidad
+    sensorSelected(sensor) {
+      // console.log(sensor);
+      this.$emit('sensorSelected', sensor);
+    },
     // evento para el cambio de unidad
     unitSelected({ tag }) {
       this.unit = tag;
@@ -173,6 +200,7 @@ export default {
     this.responsive = true;
     this.unit = this.unitModelToSelect.tag;
     this.time = this.unitsTimeModelToSelect.tag;
+    this.sensorModelDefault = this.sensorModelToSelect;
     this.unitModelDefault = this.unitModelToSelect;
     this.unitTimeModelDefault = this.unitsTimeModelToSelect;
   },
