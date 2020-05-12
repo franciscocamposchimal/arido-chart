@@ -85,6 +85,7 @@ export default {
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
+    // console.log(this.itemsToGraphModel);
     const [pSensors, tSensors] = this.tabsSelect;
     const [forTabOne] = pSensors;
     const [forTabTwo] = tSensors;

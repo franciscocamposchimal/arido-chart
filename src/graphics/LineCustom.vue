@@ -92,6 +92,11 @@ export default {
         };
       },
     },
+    // id only for pagination
+    idItem: {
+      type: Number,
+      default: () => 0,
+    },
     // model de los items de los selects
     sensorModelToSelect: {
       type: Object,
@@ -147,14 +152,15 @@ export default {
       this.$emit('sensorSelected', sensor);
     },
     // evento para el cambio de unidad
-    unitSelected({ tag }) {
-      this.unit = tag;
-      // this.$emit('unitSelected', this.unitModelDefault);
+    unitSelected(selectedItem) {
+      console.log('emit-selectedItem ', selectedItem);
+      this.unit = selectedItem.tag;
+      this.$emit('unitSelected', { selectedItem, id: this.idItem });
     },
     // evento para el cambio de tiempo
-    timeSelected({ tag }) {
-      this.time = tag;
-      // this.$emit('unitsTimeSelected', this.unitTimeModelDefault);
+    timeSelected(selectedItem) {
+      this.time = selectedItem.tag;
+      this.$emit('timeSelected', { selectedItem, id: this.idItem });
     },
   },
   computed: {
@@ -211,6 +217,16 @@ export default {
         this.responsive = true;
       }
       this.responsive = true;
+    },
+    unitModelToSelect(old) {
+      if (this.idItem !== 0) {
+        this.unitModelDefault = old;
+      }
+    },
+    unitsTimeModelToSelect(old) {
+      if (this.idItem !== 0) {
+        this.unitTimeModelDefault = old;
+      }
     },
   },
 };

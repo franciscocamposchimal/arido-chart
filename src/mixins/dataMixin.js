@@ -96,7 +96,7 @@ export const dataDefaultMix = {
 							},
 							data: {
 								labels: this.timeToLabel(1),
-								datasets: [ this.fillData(`St${idx + 1}`, 1, 5000000) ]
+								datasets: [ this.fillData(`ST${idx + 1}`, 1, 5000000) ]
 							}
 						};
 					})

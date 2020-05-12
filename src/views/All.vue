@@ -29,17 +29,23 @@
             <v-row justify="center">
               <v-col
                 cols="6"
-                v-for="(chart, idx) in chunkGraphs(itemTab, page[tab] - 1)"
+                v-for="(chart, idx) in chunkGraphs(
+                  itemsToGraphModel,
+                  page[tab] - 1,
+                )"
                 :key="`${idx}-chart`"
               >
                 <cstm-line
+                  :idItem="chart.id"
                   :chartDataToGraph="chart.data"
                   :defaultStatus="chart.status"
-                  :unitModelToSelect="unitToGraph[tab]"
-                  :unitsTimeModelToSelect="unitsTimeToGraph[tab]"
+                  :unitModelToSelect="chart.model.unitToGraph"
+                  :unitsTimeModelToSelect="chart.model.unitsTimeToGraph"
                   :unitSelect="unitsToSelect[tab]"
                   :unitTimeSelect="unitsTimeToSelect"
                   :responsiveChart="responsiveCharts"
+                  @unitSelected="unitModelSelected"
+                  @timeSelected="timeModelSelected"
                 ></cstm-line>
               </v-col>
             </v-row>
@@ -65,14 +71,43 @@ export default {
       page: [1, 1],
       items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
+      // datos a graficar
+      itemsToGraphModel: [],
     };
   },
   methods: {
     // dividir el arreglo en grupos de a 2 y sobrantes
     chunkGraphs(charts, page) {
-      const chunkIt = this.lodash.chunk(charts, 2);
-      // console.log(charts);
+      const chunkIt = this.lodash.chunk(charts[this.tab], 2);
       return chunkIt[page];
+    },
+    // evento para el cambio de unidad
+    unitModelSelected(value) {
+      console.log('father');
+      this.itemsToGraphModel[this.tab] = this.itemsToGraphModel[this.tab].map(
+        (i) => {
+          if (i.id === value.id) {
+            /* eslint no-param-reassign: ["error", { "props": false }] */
+            i.model.unitToGraph = value.selectedItem;
+            return i;
+          }
+          return i;
+        },
+      );
+      // console.log(this.itemsToGraphModel[this.tab]);
+    },
+    // evento para el cambio de tiempo
+    timeModelSelected(value) {
+      this.itemsToGraphModel[this.tab] = this.itemsToGraphModel[this.tab].map(
+        (i) => {
+          if (i.id === value.id) {
+            /* eslint no-param-reassign: ["error", { "props": false }] */
+            i.model.unitsTimeToGraph = value.selectedItem;
+            return i;
+          }
+          return i;
+        },
+      );
     },
   },
   watch: {
@@ -86,7 +121,38 @@ export default {
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
-    // this.unit = this.unitToGraph[this.tab].tag;
+    const [pSensors, tSensors] = this.tabsSelect;
+    this.itemsToGraphModel[0] = pSensors.map((i) => {
+      return {
+        model: {
+          unitToGraph: {
+            tag: 'PSI',
+            name: '(PSI) Pounds per square inch',
+          },
+          unitsTimeToGraph: {
+            tag: 'min',
+            name: '(min) Minutes',
+          },
+        },
+        ...i,
+      };
+    });
+    this.itemsToGraphModel[1] = tSensors.map((i) => {
+      return {
+        model: {
+          unitToGraph: {
+            tag: 'ºC',
+            name: '(ºC) Celsius',
+          },
+          unitsTimeToGraph: {
+            tag: 'min',
+            name: '(min) Minutes',
+          },
+        },
+        ...i,
+      };
+    });
+    // console.log(this.itemsToGraphModel);
     // this.time = this.unitsTimeToGraph[this.tab].tag;
   },
 };
