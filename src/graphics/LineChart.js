@@ -7,7 +7,7 @@ let canvasHeight = 0;
 export default {
 	extends: Line,
 	mixins: [ reactiveProp ],
-	props: [ 'chartData', 'options' ],
+	props: ['options'],
 	watch: {
 		options: {
 			handler(newOption) {
@@ -26,13 +26,9 @@ export default {
 			},
 			deep: true
 		},
-		/* chartData: {
-			handler(newData) {
-				console.log('newData');
-				this.$data._chart.destroy();
-				this.renderChart(newData, this.option);
-			},
-			deep: true
+		/* chartData(){
+			console.log('CHARDATA');
+			this.$data._chart.update();
 		} */
 	},
 	mounted() {

@@ -48,10 +48,7 @@
       </v-row>
     </v-card-text>
 
-    <line-chart
-      :chart-data="chartDataToGraph"
-      :options="optionsChart"
-    ></line-chart>
+    <line-chart :chart-data="chartData" :options="optionsChart"></line-chart>
 
     <v-card-actions>
       <v-btn text>Download</v-btn>
@@ -69,7 +66,7 @@ export default {
   },
   props: {
     // datos de entrada del chart
-    chartDataToGraph: {
+    chartData: {
       type: Object,
       required: true,
       default: () => {
@@ -179,7 +176,6 @@ export default {
               },
               ticks: {
                 min: 0,
-                max: 30,
                 stepSize: 1,
               },
             },
@@ -209,6 +205,7 @@ export default {
     this.sensorModelDefault = this.sensorModelToSelect;
     this.unitModelDefault = this.unitModelToSelect;
     this.unitTimeModelDefault = this.unitsTimeModelToSelect;
+    // this.chartData = this.dataToGraph;
   },
   watch: {
     responsiveChart() {

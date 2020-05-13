@@ -37,7 +37,7 @@
               >
                 <cstm-line
                   :idItem="chart.id"
-                  :chartDataToGraph="chart.data"
+                  :chartData="chart.data"
                   :defaultStatus="chart.status"
                   :unitModelToSelect="chart.model.unitToGraph"
                   :unitsTimeModelToSelect="chart.model.unitsTimeToGraph"

@@ -101,6 +101,42 @@ export const dataDefaultMix = {
 						};
 					})
 				]
+			],
+			tabsSelectReactive: [
+				[
+					...Array.from(Array(3), (x, idx) => {
+						return {
+							id: idx + 1,
+							name: `Sensor P${idx + 1}`,
+							status: {
+								title: `SP${idx + 1}`,
+								icon: 'mdi-flash',
+								color: idx % 2 ? 'green' : 'red'
+							},
+							data: {
+								labels: this.timeToLabel(1),
+								datasets: [ this.fillDataZero(`SP${idx + 1}`, 5000000) ]
+							}
+						};
+					})
+				],
+				[
+					...Array.from(Array(5), (x, idx) => {
+						return {
+							id: idx + 1,
+							name: `Sensor T${idx + 1}`,
+							status: {
+								title: `ST${idx + 1}`,
+								icon: 'mdi-flash',
+								color: idx % 2 ? 'green' : 'red'
+							},
+							data: {
+								labels: this.timeToLabel(1),
+								datasets: [ this.fillDataZero(`ST${idx + 1}`, 5000000) ]
+							}
+						};
+					})
+				]
 			]
 		};
 	},
@@ -116,6 +152,16 @@ export const dataDefaultMix = {
 				data: this.getRandomInt(hours, 100, 500)
 			};
 		},
+		fillDataZero(name, colorMax) {
+			const hexColor = this.getRandomHexColor(colorMax);
+			return {
+				label: name,
+				backgroundColor: hexColor,
+				borderColor: hexColor,
+				fill: false,
+				data: []
+			};
+		},
 		getRandomInt(hours, min, max) {
 			const toMinutes = Math.floor(hours * 60);
 			const timeList = Array.from(Array(toMinutes), () => Math.floor(Math.random() * (max - min) + min));
@@ -123,7 +169,7 @@ export const dataDefaultMix = {
 			return timeList;
 		},
 		timeToLabel(hours) {
-			const toMinutes = Math.floor(hours * 60);
+			const toMinutes = Math.floor(hours * 60) / 2;
 			// const toSeconds = Math.floor(hours * 60 * 60);
 			const minutesList = Array.from(Array(toMinutes), (x, index) => index + 1);
 			// console.log(minutesList);

@@ -13,7 +13,7 @@
             <v-row justify="space-around">
               <v-col cols="12">
                 <cstm-line
-                  :chartDataToGraph="itemsToGraph[tab].data"
+                  :chartData="itemsToGraph[tab].data"
                   :defaultStatus="itemsToGraph[tab].status"
                   :unitModelToSelect="unitToGraph[tab]"
                   :unitsTimeModelToSelect="unitsTimeToGraph[tab]"
