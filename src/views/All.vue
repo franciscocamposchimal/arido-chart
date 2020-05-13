@@ -83,7 +83,7 @@ export default {
     },
     // evento para el cambio de unidad
     unitModelSelected(value) {
-      console.log('father');
+      // console.log('father');
       this.itemsToGraphModel[this.tab] = this.itemsToGraphModel[this.tab].map(
         (i) => {
           if (i.id === value.id) {

@@ -153,7 +153,7 @@ export default {
     },
     // evento para el cambio de unidad
     unitSelected(selectedItem) {
-      console.log('emit-selectedItem ', selectedItem);
+      // console.log('emit-selectedItem ', selectedItem);
       this.unit = selectedItem.tag;
       this.$emit('unitSelected', { selectedItem, id: this.idItem });
     },

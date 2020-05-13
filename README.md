@@ -22,3 +22,12 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Heroku crete
+heroku apps:create argos
+
+### Config vars
+heroku config:set NODE_MODULES_CACHE=false
+heroku config:set NPM_CONFIG_PRODUCTION=false
+heroku config:set TZ=America/Merida
+heroku config:set YARN_PRODUCTION=false
