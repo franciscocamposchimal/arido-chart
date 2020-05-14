@@ -82,15 +82,13 @@ export default {
     reactiveData() {
       const {
         labels,
-        datasets: [{ label, backgroundColor, borderColor, fill }],
+        datasets: [{ label, backgroundColor, borderColor, fill, data }],
       } = this.itemsToGraphModel[this.tab].data;
 
-      this.reactiveDataIncomming.push(
-        Math.floor(Math.random() * (500 - 100) + 100),
-      );
+      data.push(Math.floor(Math.random() * (500 - 100) + 100));
 
-      if (this.reactiveDataIncomming.length > 30) {
-        this.reactiveDataIncomming.shift();
+      if (data.length > 30) {
+        data.shift();
         labels.shift();
         const lastItem = this.lodash.last(labels);
         if (lastItem === 60) {
@@ -108,28 +106,13 @@ export default {
             backgroundColor,
             borderColor,
             fill,
-            data: this.reactiveDataIncomming,
+            data,
           },
         ],
       };
     },
   },
-  computed: {
-    /* reactiveData() {
-      const {
-        labels,
-        datasets: [{ label, backgroundColor, borderColor, fill, data }],
-      } = this.itemsToGraphModel[this.tab].data;
-
-      const result = this.lodash.concat(data, this.reactiveDataIncomming);
-
-      console.log('reactive');
-      return {
-        labels,
-        datasets: [{ label, backgroundColor, borderColor, fill, data: result }],
-      };
-    }, */
-  },
+  computed: {},
   watch: {
     tab(tabSelect) {
       this.responsiveCharts = !this.responsiveCharts;
