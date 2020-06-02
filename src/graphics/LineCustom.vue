@@ -159,6 +159,11 @@ export default {
       this.time = selectedItem.tag;
       this.$emit('timeSelected', { selectedItem, id: this.idItem });
     },
+    // click en la grafica
+    clickEventListener(point) {
+      console.log('point ', point);
+      // console.log('elements ', elements);
+    },
   },
   computed: {
     // opciones de vista de la frafica
@@ -166,10 +171,12 @@ export default {
       return {
         responsive: this.responsive,
         maintainAspectRatio: false,
+        // onClick: this.clickEventListener,
+        // events: ['click'],
         scales: {
           xAxes: [
             {
-              display: true,
+              // display: true,
               scaleLabel: {
                 display: true,
                 labelString: `Time (${this.time})`,
@@ -177,12 +184,15 @@ export default {
               ticks: {
                 min: 0,
                 stepSize: 1,
+                /* callback: (value) => {
+                  return `${value}${this.time}`;
+                }, */
               },
             },
           ],
           yAxes: [
             {
-              display: true,
+              // display: true,
               scaleLabel: {
                 display: true,
                 labelString: this.unit,
@@ -191,6 +201,13 @@ export default {
                 min: 100,
                 max: 500,
                 stepSize: 100,
+                /* callback: (value) => {
+                  return ;
+                }, */
+              },
+              gridLines: {
+                drawBorder: false,
+                color: ['red', 'green'],
               },
             },
           ],
