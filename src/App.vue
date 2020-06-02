@@ -16,9 +16,16 @@ export default {
   components: {
     Navigation,
   },
-
   data: () => ({
     //
   }),
+  sockets: {
+    connect() {
+      console.log('socket connected');
+    },
+    disconnect() {
+      console.log('disconnected');
+    },
+  },
 };
 </script>

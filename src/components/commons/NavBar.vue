@@ -53,6 +53,27 @@
       <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">
         ARGOS
       </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn icon>
+        <v-icon :color="sensorsIsOnline ? 'green' : 'red'">
+          {{ sensorsIsOnline ? 'mdi-sync' : 'mdi-sync-off' }}
+        </v-icon>
+      </v-btn>
+      <i>
+        {{
+          sensorsIsOnline ? ' Sensors connected, ' : ' Sensors disconnected, '
+        }}
+      </i>
+      <v-btn icon>
+        <v-icon :color="$socket.connected ? 'green' : 'red'">
+          {{
+            $socket.connected ? 'mdi-server-network' : 'mdi-server-network-off'
+          }}
+        </v-icon>
+      </v-btn>
+      <i>
+        {{ $socket.connected ? ' Server connected' : ' Server disconnected' }}
+      </i>
     </v-app-bar>
   </div>
 </template>
@@ -61,6 +82,7 @@ export default {
   name: 'Navigation',
   data: () => ({
     drawer: null,
+    sensorsOnline: false,
     items: [
       {
         name: 'Single',
@@ -79,5 +101,16 @@ export default {
       },
     ],
   }),
+  computed: {
+    sensorsIsOnline() {
+      return this.sensorsOnline;
+    },
+  },
+  sockets: {
+    SENSORS_ISCONNECTED(payload) {
+      this.sensorsOnline = payload.isConnected;
+      console.log('SENSORS_ISCONNECTED: ', payload);
+    },
+  },
 };
 </script>
