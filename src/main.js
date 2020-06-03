@@ -11,7 +11,9 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
-const socket = io('http://localhost:3000');
+console.log('IP SERVER', window.location.hostname);
+
+const socket = io(`http://${window.location.hostname}:3000`);
 
 Vue.config.productionTip = false;
 
