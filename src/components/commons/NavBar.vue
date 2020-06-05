@@ -43,7 +43,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
-      color="blue darken-3"
+      color="#0CCC9D"
       :clipped-left="$vuetify.breakpoint.lgAndUp"
       dark
       app
@@ -51,11 +51,15 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">
-        ARGOS
+        <v-img
+          :src="require('@/assets/argosLogo.svg')"
+          height="50%"
+          width="50%"
+        ></v-img>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn icon>
-        <v-icon :color="sensorsIsOnline ? 'green' : 'red'">
+        <v-icon :color="sensorsIsOnline ? 'deep-purple darken-3' : 'red'">
           {{ sensorsIsOnline ? 'mdi-sync' : 'mdi-sync-off' }}
         </v-icon>
       </v-btn>
@@ -65,7 +69,7 @@
         }}
       </i>
       <v-btn icon>
-        <v-icon :color="$socket.connected ? 'green' : 'red'">
+        <v-icon :color="$socket.connected ? 'deep-purple darken-3' : 'red'">
           {{
             $socket.connected ? 'mdi-server-network' : 'mdi-server-network-off'
           }}
