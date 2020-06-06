@@ -4,6 +4,7 @@ import VueLodash from 'vue-lodash';
 import lodash from 'lodash';
 import DatetimePicker from 'vuetify-datetime-picker';
 import Vue from 'vue';
+import axios from 'axios';
 import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
@@ -13,8 +14,9 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 
 console.log('IP SERVER', window.location.hostname);
-
-const socket = io(`http://${window.location.hostname}:3000`);
+const serverUrl = `http://${window.location.hostname}:3000`;
+axios.defaults.baseURL = serverUrl;
+const socket = io(serverUrl);
 
 Vue.config.productionTip = false;
 

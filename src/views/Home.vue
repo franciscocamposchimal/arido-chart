@@ -98,8 +98,8 @@
 </template>
 
 <script>
-import TempSensorCard from '../components/dasboard/TempSensorCard.vue';
-import PreSensorCard from '../components/dasboard/PreSensorCard.vue';
+import TempSensorCard from '../components/dashboard/TempSensorCard.vue';
+import PreSensorCard from '../components/dashboard/PreSensorCard.vue';
 
 export default {
   name: 'Home',
