@@ -10,38 +10,10 @@
               v-for="(item, index) in sensorsT"
               :key="`t-${index}`"
             >
-              <v-card
-                :color="
-                  item.val < 30
-                    ? '#26c6da'
-                    : item.val < 60
-                    ? '#FFF9C4'
-                    : '#FF3D00'
-                "
-                :dark="item.val < 30 ? true : false"
-                elevation="5"
-              >
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="headline">
-                      Sensor {{ item.name }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ currentDate }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-card-text>
-                  <v-row align="center">
-                    <v-col class="display-1" cols="6">
-                      {{ item.val }}&deg;C
-                    </v-col>
-                    <v-col cols="6">
-                      <v-img src="@/assets/temp-t.png" width="80"></v-img>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-              </v-card>
+              <TempSensorCard
+                :sensor="item"
+                :date="currentDate"
+              ></TempSensorCard>
             </v-col>
           </v-row>
           <v-card-title>Pressure sensors</v-card-title>
@@ -51,56 +23,7 @@
               v-for="(item, index) in sensorsP"
               :key="`p-${index}`"
             >
-              <v-card color="#26c6da" :dark="true" elevation="5">
-                <v-list-item two-line>
-                  <v-list-item-content>
-                    <v-list-item-title class="headline">
-                      Sensor {{ item.name }}
-                    </v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ currentDate }}
-                    </v-list-item-subtitle>
-                    <v-divider></v-divider>
-                  </v-list-item-content>
-                </v-list-item>
-                <v-card-text>
-                  <v-row align="center">
-                    <v-col class="display-1" cols="6">{{ item.val }}Pa</v-col>
-                    <v-col cols="6">
-                      <v-img src="@/assets/pre-t.png" width="90"></v-img>
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon :color="item.val < 151 ? 'green accent-3' : ''">
-                      {{
-                        151 > item.val
-                          ? 'mdi-alarm-light'
-                          : 'mdi-alarm-light-outline'
-                      }}
-                    </v-icon>
-                    <v-icon
-                      :color="item.val > 150 && item.val < 251 ? 'yellow' : ''"
-                    >
-                      {{
-                        item.val > 150 && 251 > item.val
-                          ? 'mdi-alarm-light'
-                          : 'mdi-alarm-light-outline'
-                      }}
-                    </v-icon>
-                    <v-icon
-                      :color="item.val > 250 && item.val < 501 ? 'red' : ''"
-                    >
-                      {{
-                        item.val > 250 && 501 > item.val
-                          ? 'mdi-alarm-light'
-                          : 'mdi-alarm-light-outline'
-                      }}
-                    </v-icon>
-                  </v-list-item-icon>
-                </v-list-item>
-              </v-card>
+              <PreSensorCard :sensor="item" :date="currentDate"></PreSensorCard>
             </v-col>
           </v-row>
           <v-card-title>Create test</v-card-title>
@@ -170,30 +93,20 @@
           </v-form>
         </v-card>
       </v-col>
-      <!--
-      <v-col cols="12">
-        <v-row justify="space-around" align="center">
-          <v-col :cols="this.$vuetify.breakpoint.sm ? 12 : 6">
-            <v-card class="pa-2" outlined tile elevation="4">
-              <v-img :src="require('@/assets/argosLogo.svg')"></v-img>
-            </v-card>
-          </v-col>
-          <v-col :cols="this.$vuetify.breakpoint.sm ? 12 : 6">
-            <v-card class="pa-2" outlined tile elevation="4">
-              <v-img :src="require('@/assets/aridoLogoCompleto.png')"></v-img>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
-      -->
     </v-row>
   </v-container>
 </template>
 
 <script>
+import TempSensorCard from '../components/dasboard/TempSensorCard.vue';
+import PreSensorCard from '../components/dasboard/PreSensorCard.vue';
+
 export default {
   name: 'Home',
-  components: {},
+  components: {
+    TempSensorCard,
+    PreSensorCard,
+  },
   data() {
     return {
       datetime: null,
