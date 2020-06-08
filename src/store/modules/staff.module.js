@@ -23,6 +23,11 @@ export default {
         return op;
       });
     },
+    DELETE_OPERATOR(state, payload) {
+      state.operators = state.operators.filter((op) => {
+        return op.id !== payload.id;
+      });
+    },
     SET_INSTRUMENTALISTS(state, payload) {
       state.instrumentalists = payload;
     },
@@ -30,6 +35,11 @@ export default {
       state.instrumentalists = state.instrumentalists.map((inst) => {
         if (inst.id === payload.id) inst = payload;
         return inst;
+      });
+    },
+    DELETE_INST(state, payload) {
+      state.instrumentalists = state.instrumentalists.filter((inst) => {
+        return inst.id !== payload.id;
       });
     },
   },
@@ -101,6 +111,50 @@ export default {
             message: 'Put instrumentalists success.',
           });
           commit('UPDATE_INSTRUMENTALIST', data);
+        })
+        .catch(
+          ({
+            response: {
+              data: { statusCode, error },
+            },
+          }) => {
+            console.log(`${statusCode} ${error}`);
+            commit('SET_API_RESP', { status: statusCode, message: error });
+          },
+        );
+    },
+    deleteOp({ commit }, { id }) {
+      axios
+        .delete(`/staff/operators/${id}`)
+        .then(({ data, status }) => {
+          console.log('DELETE OP: ', data);
+          commit('SET_API_RESP', {
+            status,
+            message: 'Delete operator success.',
+          });
+          commit('DELETE_OPERATOR', data);
+        })
+        .catch(
+          ({
+            response: {
+              data: { statusCode, error },
+            },
+          }) => {
+            console.log(`${statusCode} ${error}`);
+            commit('SET_API_RESP', { status: statusCode, message: error });
+          },
+        );
+    },
+    deleteInst({ commit }, { id }) {
+      axios
+        .delete(`/staff/instrumentalists/${id}`)
+        .then(({ data, status }) => {
+          console.log('DELETE INST: ', data);
+          commit('SET_API_RESP', {
+            status,
+            message: 'Delete instrumentalist success.',
+          });
+          commit('DELETE_INST', data);
         })
         .catch(
           ({

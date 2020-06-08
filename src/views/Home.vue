@@ -41,13 +41,26 @@
                     ></v-datetime-picker>
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field label="Operator" required></v-text-field>
+                    <v-autocomplete
+                      v-model="opModel"
+                      :items="operatorsList"
+                      item-text="name"
+                      :return-object="true"
+                      dense
+                      filled
+                      label="Operator"
+                    ></v-autocomplete>
                   </v-col>
                   <v-col cols="6">
-                    <v-text-field
+                    <v-autocomplete
+                      v-model="instModel"
+                      :items="instrumentalistsList"
+                      item-text="name"
+                      :return-object="true"
+                      dense
+                      filled
                       label="Instrumentalist"
-                      required
-                    ></v-text-field>
+                    ></v-autocomplete>
                   </v-col>
                   <v-col cols="6">
                     <v-btn color="secondary">
@@ -98,6 +111,7 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import TempSensorCard from '../components/dashboard/TempSensorCard.vue';
 import PreSensorCard from '../components/dashboard/PreSensorCard.vue';
 
@@ -114,9 +128,20 @@ export default {
       currentDate: '',
       sensorsT: [],
       sensorsP: [],
+      opModel: null,
+      instModel: null,
     };
   },
-  methods: {},
+  methods: {
+    ...mapActions(['getOperators', 'getInstrumentaslists']),
+  },
+  computed: {
+    ...mapGetters(['operatorsList', 'instrumentalistsList']),
+  },
+  mounted() {
+    this.getOperators();
+    this.getInstrumentaslists();
+  },
   sockets: {
     SENSORS_DATA(data) {
       this.currentDate = data.date;

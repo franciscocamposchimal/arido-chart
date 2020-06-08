@@ -26,13 +26,15 @@
               </v-edit-dialog>
             </v-list-item-title>
             <v-list-item-subtitle
+              class="text--primary"
+              v-text="`Tests ${staff.tests.length}`"
+            ></v-list-item-subtitle>
+            <v-list-item-subtitle
               v-text="staff.createdAt"
             ></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-chip class="ma-2" color="primary" text-color="white" small>
-              Tests {{ staff.tests.length }}
-            </v-chip>
+            <v-icon @click="deleteItem(staff)">mdi-delete</v-icon>
           </v-list-item-action>
         </v-list-item>
       </v-list-item-group>
@@ -54,6 +56,9 @@ export default {
     save(data) {
       // console.log(data);
       this.$emit('itemToEdit', { table: this.title, data });
+    },
+    deleteItem(data) {
+      this.$emit('itemToDelete', { table: this.title, data });
     },
   },
   watch: {

@@ -10,6 +10,7 @@
                 title="OPERATORS"
                 :staffList="operatorsList"
                 @itemToEdit="editStaff"
+                @itemToDelete="deleteStaff"
               ></StaffCard>
             </v-col>
             <v-col cols="6">
@@ -17,6 +18,7 @@
                 title="INSTRUMENTALISTS"
                 :staffList="instrumentalistsList"
                 @itemToEdit="editStaff"
+                @itemToDelete="deleteStaff"
               ></StaffCard>
             </v-col>
           </v-row>
@@ -47,12 +49,19 @@ export default {
       'getInstrumentaslists',
       'updateOperator',
       'updateInstrumentalist',
+      'deleteOp',
+      'deleteInst',
     ]),
     editStaff({ table, data: { id, name } }) {
       if (table === 'OPERATORS') this.updateOperator({ id, name });
       if (table === 'INSTRUMENTALISTS')
         this.updateInstrumentalist({ id, name });
       // console.log(staff);
+    },
+    deleteStaff({ table, data: { id } }) {
+      // console.log(`${table}-${id}`);
+      if (table === 'OPERATORS') this.deleteOp({ id });
+      if (table === 'INSTRUMENTALISTS') this.deleteInst({ id });
     },
   },
   computed: {
