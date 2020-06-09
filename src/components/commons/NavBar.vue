@@ -40,6 +40,11 @@
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            <v-btn small @click="isOpenDialog">CREATE TEST</v-btn>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
@@ -105,15 +110,14 @@ export default {
       },
     ],
   }),
+  methods: {
+    isOpenDialog() {
+      this.$emit('openDialog', true);
+    },
+  },
   computed: {
     sensorsIsOnline() {
       return this.sensorsOnline;
-    },
-  },
-  sockets: {
-    SENSORS_ISCONNECTED(payload) {
-      this.sensorsOnline = payload.isConnected;
-      console.log('SENSORS_ISCONNECTED: ', payload);
     },
   },
 };

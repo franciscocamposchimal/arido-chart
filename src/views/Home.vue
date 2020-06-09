@@ -26,84 +26,6 @@
               <PreSensorCard :sensor="item" :date="currentDate"></PreSensorCard>
             </v-col>
           </v-row>
-          <v-card-title>Create test</v-card-title>
-          <v-form>
-            <v-row justify="start" class="pa-5">
-              <v-col cols="6">
-                <v-row>
-                  <v-col cols="6">
-                    <v-text-field label="Test name" required></v-text-field>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-datetime-picker
-                      label="Datetime"
-                      v-model="datetime"
-                    ></v-datetime-picker>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-model="opModel"
-                      :items="operatorsList"
-                      item-text="name"
-                      :return-object="true"
-                      dense
-                      filled
-                      label="Operator"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-model="instModel"
-                      :items="instrumentalistsList"
-                      item-text="name"
-                      :return-object="true"
-                      dense
-                      filled
-                      label="Instrumentalist"
-                    ></v-autocomplete>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-btn color="secondary">
-                      Start test
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-col>
-              <v-col cols="6">
-                <v-row no-gutters>
-                  <v-col cols="6">
-                    <v-container class="grey lighten-5">
-                      <p>Temperature sensors</p>
-                      <v-row no-gutters>
-                        <v-col cols="6">
-                          <v-checkbox label="sensor S1"></v-checkbox>
-                          <v-checkbox label="sensor S2"></v-checkbox>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-checkbox label="sensor S3"></v-checkbox>
-                          <v-checkbox label="sensor S4"></v-checkbox>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-col>
-                  <v-col cols="6">
-                    <v-container>
-                      <p>Pressure sensors</p>
-                      <v-row no-gutters>
-                        <v-col cols="6">
-                          <v-checkbox label="sensor S5"></v-checkbox>
-                          <v-checkbox label="sensor S6"></v-checkbox>
-                        </v-col>
-                        <v-col cols="6">
-                          <v-checkbox label="sensor S7"></v-checkbox>
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-col>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-form>
         </v-card>
       </v-col>
     </v-row>
@@ -111,7 +33,6 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import TempSensorCard from '../components/dashboard/TempSensorCard.vue';
 import PreSensorCard from '../components/dashboard/PreSensorCard.vue';
 
@@ -123,24 +44,11 @@ export default {
   },
   data() {
     return {
-      datetime: null,
       menu2: false,
       currentDate: '',
       sensorsT: [],
       sensorsP: [],
-      opModel: null,
-      instModel: null,
     };
-  },
-  methods: {
-    ...mapActions(['getOperators', 'getInstrumentaslists']),
-  },
-  computed: {
-    ...mapGetters(['operatorsList', 'instrumentalistsList']),
-  },
-  mounted() {
-    this.getOperators();
-    this.getInstrumentaslists();
   },
   sockets: {
     SENSORS_DATA(data) {
