@@ -2,7 +2,7 @@
   <v-container class="grey lighten-5" :fluid="false">
     <v-card>
       <v-card-title class="text-center justify-center py-6">
-        <h1 class="font-weight-bold display-3">Single - {{ items[tab] }}</h1>
+        <h2 class="font-weight-bold display-5">{{ items[tab] }}</h2>
       </v-card-title>
       <v-tabs v-model="tab">
         <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
@@ -73,6 +73,7 @@ export default {
       const getItem = this.tabsSelectReactive[this.tab].find((d) => {
         return d.id === graph.id;
       });
+      // console.log(JSON.stringify(getItem));
       // getItem.data.datasets[0].data = this.reactiveArray;
       this.itemsToGraphModel[this.tab] = getItem;
       this.responsiveCharts = !this.responsiveCharts;
@@ -158,3 +159,10 @@ export default {
   },
 };
 </script>
+
+/** { date: moment().format('dddd, MMMM Do YYYY, h:mm:ss a'), sensorsP: [ {
+name: 's5', type: 'p', val: pRandVal() }, { name: 's6', type: 'p', val:
+pRandVal() }, { name: 's7', type: 'p', val: pRandVal() } ], sensorsT: [ { name:
+'s1', type: 't', val: tRandVal() }, { name: 's2', type: 't', val: tRandVal() },
+{ name: 's3', type: 't', val: tRandVal() }, { name: 's4', type: 't', val:
+tRandVal() } ] } */

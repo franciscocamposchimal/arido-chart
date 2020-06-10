@@ -86,7 +86,7 @@ export default {
       axios
         .put(`/staff/operators/${id}`, { name })
         .then(({ data, status }) => {
-          console.log('PUT OPS: ', data);
+          // console.log('PUT OPS: ', data);
           commit('SET_API_RESP', { status, message: 'Put operators success.' });
           commit('UPDATE_OPERATOR', data);
         })
@@ -96,7 +96,7 @@ export default {
               data: { statusCode, error },
             },
           }) => {
-            console.log(`${statusCode} ${error}`);
+            // console.log(`${statusCode} ${error}`);
             commit('SET_API_RESP', { status: statusCode, message: error });
           },
         );
@@ -105,7 +105,7 @@ export default {
       axios
         .put(`/staff/instrumentalists/${id}`, { name })
         .then(({ data, status }) => {
-          console.log('PUT INS: ', data);
+          // console.log('PUT INS: ', data);
           commit('SET_API_RESP', {
             status,
             message: 'Put instrumentalists success.',
@@ -118,7 +118,7 @@ export default {
               data: { statusCode, error },
             },
           }) => {
-            console.log(`${statusCode} ${error}`);
+            // console.log(`${statusCode} ${error}`);
             commit('SET_API_RESP', { status: statusCode, message: error });
           },
         );
@@ -127,7 +127,7 @@ export default {
       axios
         .delete(`/staff/operators/${id}`)
         .then(({ data, status }) => {
-          console.log('DELETE OP: ', data);
+          // console.log('DELETE OP: ', data);
           commit('SET_API_RESP', {
             status,
             message: 'Delete operator success.',
@@ -140,7 +140,7 @@ export default {
               data: { statusCode, error },
             },
           }) => {
-            console.log(`${statusCode} ${error}`);
+            // console.log(`${statusCode} ${error}`);
             commit('SET_API_RESP', { status: statusCode, message: error });
           },
         );
@@ -149,7 +149,7 @@ export default {
       axios
         .delete(`/staff/instrumentalists/${id}`)
         .then(({ data, status }) => {
-          console.log('DELETE INST: ', data);
+          // console.log('DELETE INST: ', data);
           commit('SET_API_RESP', {
             status,
             message: 'Delete instrumentalist success.',
@@ -162,7 +162,7 @@ export default {
               data: { statusCode, error },
             },
           }) => {
-            console.log(`${statusCode} ${error}`);
+            // console.log(`${statusCode} ${error}`);
             commit('SET_API_RESP', { status: statusCode, message: error });
           },
         );

@@ -47,12 +47,7 @@
         </v-col>
       </v-row>
     </v-card-text>
-
     <line-chart :chart-data="chartData" :options="optionsChart"></line-chart>
-
-    <v-card-actions>
-      <v-btn text>Download</v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 <script>

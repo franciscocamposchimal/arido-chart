@@ -3,7 +3,7 @@
     <v-card>
       <!-- Titulo -->
       <v-card-title class="text-center justify-center py-6">
-        <h1 class="font-weight-bold display-3">All - {{ items[tab] }}</h1>
+        <h2 class="font-weight-bold display-5">{{ items[tab] }}</h2>
       </v-card-title>
       <!-- Cabeceras de los tabs -->
       <v-tabs v-model="tab">

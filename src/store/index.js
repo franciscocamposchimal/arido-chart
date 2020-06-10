@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import staffModule from './modules/staff.module';
+import sensorsModule from './modules/sensors.module';
 
 Vue.use(Vuex);
 
@@ -28,5 +29,6 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     staffModule,
+    sensorsModule,
   },
 });
