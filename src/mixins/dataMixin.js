@@ -1,5 +1,4 @@
 /* eslint-disable */
-import { mapActions, mapGetters } from 'vuex';
 
 export const dataDefaultMix = {
   data() {
@@ -143,7 +142,6 @@ export const dataDefaultMix = {
     };
   },
   methods: {
-    ...mapActions(['getSensors']),
     // datos random
     fillData(name, hours, colorMax) {
       const hexColor = this.getRandomHexColor(colorMax);
@@ -184,48 +182,6 @@ export const dataDefaultMix = {
       // 1000000
       const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
-    },
-  },
-  computed: {
-	...mapGetters(['sensorsList']),
-  },
-  mounted() {
-    this.getSensors();
-  },
-  watch: {
-    sensorsList({ sensorsT, sensorsP }) {
-        const sensorsTemp = sensorsT.map(({ id, name, tag }) => {
-          return {
-            id,
-            name,
-            status: {
-              title: tag,
-              icon: 'mdi-flash',
-              color: 'green',
-            },
-            data: {
-              labels: this.timeToLabel(1),
-              datasets: [this.fillDataZero(tag, 5000000)],
-            },
-          };
-        });
-        const sensorsPres = sensorsP.map(({ id, name, tag }) => {
-          return {
-            id,
-            name,
-            status: {
-              title: tag,
-              icon: 'mdi-flash',
-              color: 'green',
-            },
-            data: {
-              labels: this.timeToLabel(1),
-              datasets: [this.fillDataZero(tag, 5000000)],
-            },
-          };
-        });
-        console.log('sensorsList');
-        this.tabsSelectReactive = [sensorsTemp, sensorsPres];
     },
   },
 };

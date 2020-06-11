@@ -1,5 +1,6 @@
 <template>
   <v-container class="grey lighten-5" :fluid="false">
+    <!-- <pre>{{ tabsSelectApi }}</pre> -->
     <v-card>
       <v-card-title class="text-center justify-center py-6">
         <h2 class="font-weight-bold display-5">{{ items[tab] }}</h2>
@@ -9,7 +10,7 @@
       </v-tabs>
       <v-tabs-items v-model="tab">
         <v-tab-item
-          v-for="(item, index) in tabsSelectReactive"
+          v-for="(item, index) in tabsSelectApi"
           :key="`${index}-tab`"
         >
           <v-container class="grey lighten-5" :fluid="false">
@@ -36,6 +37,7 @@
   </v-container>
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
 import LineCustom from '@/graphics/LineCustom.vue';
 import { dataDefaultMix } from '@/mixins/dataMixin';
 // :width="300" :height="300"
@@ -65,28 +67,29 @@ export default {
       sensorsDefaultToGraph: [{}, {}],
       // select para los sensores
       sensorsToSelect: [[], []],
+      // from API
+      tabsSelectApi: [],
     };
   },
   methods: {
+    ...mapActions(['getSensors']),
     itemSelected(graph) {
       // console.log(graph);
-      const getItem = this.tabsSelectReactive[this.tab].find((d) => {
+      const getItem = this.tabsSelectApi[this.tab].find((d) => {
         return d.id === graph.id;
       });
       // console.log(JSON.stringify(getItem));
-      // getItem.data.datasets[0].data = this.reactiveArray;
       this.itemsToGraphModel[this.tab] = getItem;
       this.responsiveCharts = !this.responsiveCharts;
       // console.log(this.itemsToGraphModel);
-      // this.itemsToGraph[this.tab] = graph;
     },
-    reactiveData() {
+    reactiveData({ val }) {
       const {
         labels,
         datasets: [{ label, backgroundColor, borderColor, fill, data }],
       } = this.itemsToGraphModel[this.tab].data;
 
-      data.push(Math.floor(Math.random() * (500 - 100) + 100));
+      data.push(val);
 
       if (data.length > 30) {
         data.shift();
@@ -113,49 +116,104 @@ export default {
       };
     },
   },
-  computed: {},
+  computed: {
+    ...mapGetters(['sensorsList']),
+  },
   watch: {
     tab(tabSelect) {
       this.responsiveCharts = !this.responsiveCharts;
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
-  },
-  beforeMount() {
-    /* 
-       Acciones para variables de inicio 
-       antes de que el componente sea montado a la vista.
-    */
-    // console.log(this.itemsToGraphModel);
-    const [pSensors, tSensors] = this.tabsSelectReactive;
-    const [forTabOne] = pSensors;
-    const [forTabTwo] = tSensors;
-    this.itemsToGraphModel[0] = forTabOne;
-    this.itemsToGraphModel[1] = forTabTwo;
-    this.sensorsDefaultToGraph[0] = { id: forTabOne.id, name: forTabOne.name };
-    this.sensorsDefaultToGraph[1] = { id: forTabTwo.id, name: forTabTwo.name };
-    this.unit = this.unitToGraph[this.tab].tag;
-    this.time = this.unitsTimeToGraph[this.tab].tag;
-    this.sensorsToSelect[0] = pSensors.map(({ id, name }) => {
-      return {
-        id,
-        name,
+    sensorsList() {
+      // console.log('WATCH: ', this.sensorsList);
+      const { sensorsT, sensorsP } = this.sensorsList;
+      const sensorsTemp = sensorsT.map(({ id, name, tag }) => {
+        return {
+          id,
+          name,
+          status: {
+            title: tag,
+            icon: 'mdi-flash',
+            color: 'green',
+          },
+          data: {
+            labels: this.timeToLabel(1),
+            datasets: [this.fillDataZero(tag, 5000000)],
+          },
+        };
+      });
+      const sensorsPres = sensorsP.map(({ id, name, tag }) => {
+        return {
+          id,
+          name,
+          status: {
+            title: tag,
+            icon: 'mdi-flash',
+            color: 'green',
+          },
+          data: {
+            labels: this.timeToLabel(1),
+            datasets: [this.fillDataZero(tag, 5000000)],
+          },
+        };
+      });
+      this.tabsSelectApi = [sensorsPres, sensorsTemp];
+      // console.log('sensorsList', this.tabsSelectApi);
+      // assign to tabs
+      const [pSensors, tSensors] = this.tabsSelectApi;
+      const [forTabOne] = pSensors;
+      const [forTabTwo] = tSensors;
+      this.itemsToGraphModel[0] = forTabOne;
+      this.itemsToGraphModel[1] = forTabTwo;
+      this.sensorsDefaultToGraph[0] = {
+        id: forTabOne.id,
+        name: forTabOne.name,
       };
-    });
-    this.sensorsToSelect[1] = tSensors.map(({ id, name }) => {
-      return {
-        id,
-        name,
+      this.sensorsDefaultToGraph[1] = {
+        id: forTabTwo.id,
+        name: forTabTwo.name,
       };
-    });
+      this.unit = this.unitToGraph[this.tab].tag;
+      this.time = this.unitsTimeToGraph[this.tab].tag;
+      this.sensorsToSelect[0] = pSensors.map(({ id, name }) => {
+        return {
+          id,
+          name,
+        };
+      });
+      this.sensorsToSelect[1] = tSensors.map(({ id, name }) => {
+        return {
+          id,
+          name,
+        };
+      });
+    },
   },
-  mounted() {
-    // const { datasets: [ { data } ] } = this.itemsToGraphModel[this.tab].data
-    // console.log(data);
-    setInterval(() => {
-      // console.log('push');
-      this.reactiveData();
-    }, 500);
+  created() {
+    this.getSensors();
+    // console.log('CREATED: ');
+  },
+  sockets: {
+    SENSORS_DATA({ sensorsP, sensorsT }) {
+      if (this.itemsToGraphModel) {
+        let getSensor;
+        const {
+          status: { title },
+        } = this.itemsToGraphModel[this.tab];
+        getSensor = sensorsP.filter((sensor) => {
+          return sensor.name === title;
+        });
+        if (getSensor.length === 0) {
+          getSensor = sensorsT.filter((sensor) => {
+            return sensor.name === title;
+          });
+        }
+        // console.log('TAB: ', title);
+        // console.log('SOCKET: ', {...getSensor[0]});
+        this.reactiveData({ ...getSensor[0] });
+      }
+    },
   },
 };
 </script>

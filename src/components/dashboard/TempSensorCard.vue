@@ -22,7 +22,7 @@
     </v-list-item>
     <v-card-text>
       <v-row align="center">
-        <v-col class="display-1" cols="6">{{ sensor.val }}&deg;C</v-col>
+        <v-col class="headline" cols="6">{{ sensor.val }}&deg;C</v-col>
         <v-col cols="6">
           <v-img src="@/assets/temp-t.png" width="80"></v-img>
         </v-col>

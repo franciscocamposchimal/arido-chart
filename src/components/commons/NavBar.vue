@@ -120,5 +120,11 @@ export default {
       return this.sensorsOnline;
     },
   },
+  sockets: {
+    SENSORS_ISCONNECTED(payload) {
+      this.sensorsOnline = payload.isConnected;
+      // console.log('SENSORS_ISCONNECTED: ', payload);
+    },
+  },
 };
 </script>

@@ -50,10 +50,6 @@ export default {
     disconnect() {
       console.log('disconnected');
     },
-    SENSORS_ISCONNECTED(payload) {
-      this.sensorsOnline = payload.isConnected;
-      console.log('SENSORS_ISCONNECTED: ', payload);
-    },
   },
 };
 </script>
