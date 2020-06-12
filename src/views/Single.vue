@@ -115,6 +115,71 @@ export default {
         ],
       };
     },
+    updateArraySensors({ dataSocket, localSensors }) {
+      return localSensors.map((s) => {
+        const {
+          status: { title },
+          data,
+        } = s;
+        const {
+          labels,
+          datasets: [
+            { label, backgroundColor, borderColor, fill, data: datos },
+          ],
+        } = data;
+
+        let sensorsData = dataSocket
+          .map((sensor) => {
+            if (sensor.name === title) {
+              datos.push(sensor.val);
+              if (datos.length > 30) {
+                datos.shift();
+                labels.shift();
+                const lastItem = this.lodash.last(labels);
+                if (lastItem === 60) {
+                  labels.push(1);
+                } else {
+                  labels.push(lastItem + 1);
+                }
+              }
+              return {
+                labels,
+                datasets: [
+                  {
+                    label,
+                    backgroundColor,
+                    borderColor,
+                    fill,
+                    data: datos,
+                  },
+                ],
+              };
+            }
+            return null;
+          })
+          .filter((d) => d !== null);
+        sensorsData = { ...sensorsData[0] };
+        s.data = sensorsData;
+        return s;
+      });
+    },
+    updateData({ sensorsP, sensorsT }) {
+      const [pSensors, tSensors] = this.tabsSelectApi;
+
+      const pUpdatedSensors = this.updateArraySensors({
+        dataSocket: sensorsP,
+        localSensors: pSensors,
+      });
+
+      const tUpdatedSensors = this.updateArraySensors({
+        dataSocket: sensorsT,
+        localSensors: tSensors,
+      });
+
+      // console.log('pUpdatedSensors: ', pUpdatedSensors);
+      // console.log('tUpdatedSensors: ', tUpdatedSensors);
+      this.tabsSelectApi = [pUpdatedSensors, tUpdatedSensors];
+    },
   },
   computed: {
     ...mapGetters(['sensorsList']),
@@ -196,22 +261,8 @@ export default {
   },
   sockets: {
     SENSORS_DATA({ sensorsP, sensorsT }) {
-      if (this.itemsToGraphModel) {
-        let getSensor;
-        const {
-          status: { title },
-        } = this.itemsToGraphModel[this.tab];
-        getSensor = sensorsP.filter((sensor) => {
-          return sensor.name === title;
-        });
-        if (getSensor.length === 0) {
-          getSensor = sensorsT.filter((sensor) => {
-            return sensor.name === title;
-          });
-        }
-        // console.log('TAB: ', title);
-        // console.log('SOCKET: ', {...getSensor[0]});
-        this.reactiveData({ ...getSensor[0] });
+      if (this.tabsSelectApi) {
+        this.updateData({ sensorsP, sensorsT });
       }
     },
   },

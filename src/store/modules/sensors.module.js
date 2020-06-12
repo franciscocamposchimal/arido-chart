@@ -45,46 +45,46 @@ export default {
           },
         );
     },
-  },
-  updateSens({ commit }, { id, name, tag }) {
-    axios
-      .put(`/sensor/${id}`, { name, tag })
-      .then(({ data, status }) => {
-        // console.log('PUT SENS: ', data);
-        commit('SET_API_RESP', { status, message: 'Put sensor success.' });
-        commit('UPDATE_SENSOR', data);
-      })
-      .catch(
-        ({
-          response: {
-            data: { statusCode, error },
+    updateSens({ commit }, { id, name, tag }) {
+      axios
+        .put(`/sensor/${id}`, { name, tag })
+        .then(({ data, status }) => {
+          // console.log('PUT SENS: ', data);
+          commit('SET_API_RESP', { status, message: 'Put sensor success.' });
+          commit('UPDATE_SENSOR', data);
+        })
+        .catch(
+          ({
+            response: {
+              data: { statusCode, error },
+            },
+          }) => {
+            // console.log(`${statusCode} ${error}`);
+            commit('SET_API_RESP', { status: statusCode, message: error });
           },
-        }) => {
-          // console.log(`${statusCode} ${error}`);
-          commit('SET_API_RESP', { status: statusCode, message: error });
-        },
-      );
-  },
-  deleteSens({ commit }, { id }) {
-    axios
-      .delete(`/sensor/${id}`)
-      .then(({ data, status }) => {
-        // console.log('DELETE OP: ', data);
-        commit('SET_API_RESP', {
-          status,
-          message: 'Delete sensor success.',
-        });
-        commit('DELETE_SENSOR', data);
-      })
-      .catch(
-        ({
-          response: {
-            data: { statusCode, error },
+        );
+    },
+    deleteSens({ commit }, { id }) {
+      axios
+        .delete(`/sensor/${id}`)
+        .then(({ data, status }) => {
+          // console.log('DELETE OP: ', data);
+          commit('SET_API_RESP', {
+            status,
+            message: 'Delete sensor success.',
+          });
+          commit('DELETE_SENSOR', data);
+        })
+        .catch(
+          ({
+            response: {
+              data: { statusCode, error },
+            },
+          }) => {
+            // console.log(`${statusCode} ${error}`);
+            commit('SET_API_RESP', { status: statusCode, message: error });
           },
-        }) => {
-          // console.log(`${statusCode} ${error}`);
-          commit('SET_API_RESP', { status: statusCode, message: error });
-        },
-      );
+        );
+    },
   },
 };
