@@ -193,7 +193,7 @@ export default {
                 labelString: this.unit,
               },
               ticks: {
-                min: 100,
+                min: 0,
                 max: 500,
                 stepSize: 100,
                 /* callback: (value) => {

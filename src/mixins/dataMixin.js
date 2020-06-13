@@ -103,42 +103,6 @@ export const dataDefaultMix = {
           }),
         ],
       ],
-      tabsSelectReactive: [
-        [
-          ...Array.from(Array(3), (x, idx) => {
-            return {
-              id: idx + 1,
-              name: `Sensor P${idx + 1}`,
-              status: {
-                title: `SP${idx + 1}`,
-                icon: 'mdi-flash',
-                color: idx % 2 ? 'green' : 'red',
-              },
-              data: {
-                labels: this.timeToLabel(1),
-                datasets: [this.fillDataZero(`SP${idx + 1}`, 5000000)],
-              },
-            };
-          }),
-        ],
-        [
-          ...Array.from(Array(5), (x, idx) => {
-            return {
-              id: idx + 1,
-              name: `Sensor T${idx + 1}`,
-              status: {
-                title: `ST${idx + 1}`,
-                icon: 'mdi-flash',
-                color: idx % 2 ? 'green' : 'red',
-              },
-              data: {
-                labels: this.timeToLabel(1),
-                datasets: [this.fillDataZero(`ST${idx + 1}`, 5000000)],
-              },
-            };
-          }),
-        ],
-      ],
     };
   },
   methods: {
@@ -182,6 +146,23 @@ export const dataDefaultMix = {
       // 1000000
       const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
+    },
+    createArrayToGraph(sensors) {
+      return sensors.map(({ id, name, tag }) => {
+        return {
+          id,
+          name,
+          status: {
+            title: tag,
+            icon: 'mdi-flash',
+            color: 'green',
+          },
+          data: {
+            labels: this.timeToLabel(1),
+            datasets: [this.fillDataZero(tag, 5000000)],
+          },
+        };
+      });
     },
   },
 };

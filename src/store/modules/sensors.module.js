@@ -26,8 +26,8 @@ export default {
     },
   },
   actions: {
-    getSensors({ commit }) {
-      axios
+    async getSensors({ commit }) {
+      await axios
         .get('/sensor/graphic')
         .then(({ data, status }) => {
           // console.log('SENS: ', data);

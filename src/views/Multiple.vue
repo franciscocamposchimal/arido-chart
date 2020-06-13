@@ -35,6 +35,7 @@ import { dataDefaultMix } from '@/mixins/dataMixin';
 
 export default {
   name: 'Single',
+  props: ['sensorsData', 'sensorsList'],
   mixins: [dataDefaultMix],
   components: {
     'cstm-line': LineCustom,
@@ -46,6 +47,7 @@ export default {
       time: '',
       items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
+      sesorsAPI: [],
       // datos por tab de grafica.
       itemsToGraph: [
         {
@@ -77,7 +79,73 @@ export default {
       ],
     };
   },
-  methods: {},
+  methods: {
+    updateArraySensors({ dataSocket, localSensors }) {
+      return localSensors.map((s) => {
+        const {
+          status: { title },
+          data,
+        } = s;
+        const {
+          labels,
+          datasets: [
+            { label, backgroundColor, borderColor, fill, data: datos },
+          ],
+        } = data;
+
+        let sensorsData = dataSocket
+          .map((sensor) => {
+            if (sensor.name === title) {
+              datos.push(sensor.val);
+              if (datos.length > 30) {
+                datos.shift();
+                labels.shift();
+                const lastItem = this.lodash.last(labels);
+                if (lastItem === 60) {
+                  labels.push(1);
+                } else {
+                  labels.push(lastItem + 1);
+                }
+              }
+              return {
+                labels,
+                datasets: [
+                  {
+                    label,
+                    backgroundColor,
+                    borderColor,
+                    fill,
+                    data: datos,
+                  },
+                ],
+              };
+            }
+            return null;
+          })
+          .filter((d) => d !== null);
+        sensorsData = { ...sensorsData[0] };
+        s.data = sensorsData;
+        return s;
+      });
+    },
+    updateData({ sensorsP, sensorsT }) {
+      const [pSensors, tSensors] = this.sesorsAPI;
+
+      const pUpdatedSensors = this.updateArraySensors({
+        dataSocket: sensorsP,
+        localSensors: pSensors,
+      });
+
+      const tUpdatedSensors = this.updateArraySensors({
+        dataSocket: sensorsT,
+        localSensors: tSensors,
+      });
+
+      // console.log('pUpdatedSensors: ', pUpdatedSensors);
+      // console.log('tUpdatedSensors: ', tUpdatedSensors);
+      this.sesorsAPI = [pUpdatedSensors, tUpdatedSensors];
+    },
+  },
   watch: {
     // watcher para el cambio de tab
     tab(tabSelect) {
@@ -85,13 +153,26 @@ export default {
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
+    sensorsData({ sensorsP, sensorsT }) {
+      if (this.sesorsAPI.length > 0) {
+        // console.log(this.sesorsAPI);
+        this.updateData({ sensorsP, sensorsT });
+      }
+    },
   },
   beforeMount() {
     /* 
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
-    const [forTabOne, forTabTwo] = this.tabsSelect;
+    const { sensorsP, sensorsT } = this.sensorsList;
+
+    this.sesorsAPI = [
+      this.createArrayToGraph(sensorsP),
+      this.createArrayToGraph(sensorsT),
+    ];
+
+    const [forTabOne, forTabTwo] = this.sesorsAPI;
     this.itemsToGraph[0].data.datasets = forTabOne.map(
       ({
         data: {

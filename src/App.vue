@@ -2,7 +2,10 @@
   <v-app id="inspire">
     <Navigation @openDialog="openDialog"></Navigation>
     <v-content>
-      <router-view></router-view>
+      <router-view
+        :sensorsData="sensorsData"
+        :sensorsList="sensorsList"
+      ></router-view>
       <TestDialog
         :dialog="isOpenDialog"
         :opList="operatorsList"
@@ -26,6 +29,7 @@ export default {
   },
   data: () => ({
     isOpenDialog: false,
+    sensorsData: [],
   }),
   methods: {
     ...mapActions(['getOperators', 'getInstrumentaslists']),
@@ -37,7 +41,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['operatorsList', 'instrumentalistsList']),
+    ...mapGetters(['operatorsList', 'instrumentalistsList', 'sensorsList']),
+  },
+  async created() {
+    await this.$store.dispatch('getSensors');
   },
   mounted() {
     this.getOperators();
@@ -49,6 +56,10 @@ export default {
     },
     disconnect() {
       console.log('disconnected');
+    },
+    SENSORS_DATA({ sensorsP, sensorsT }) {
+      // console.log('SENSORS_DATA');
+      this.sensorsData = { sensorsP, sensorsT };
     },
   },
 };
