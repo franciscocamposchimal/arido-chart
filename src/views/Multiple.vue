@@ -1,5 +1,5 @@
 <template>
-  <v-container class="grey lighten-5" :fluid="false">
+  <v-container class="grey lighten-5" :fluid="true">
     <v-card>
       <v-card-title class="text-center justify-center py-6">
         <h1 class="font-weight-bold display-3">Multiple - {{ items[tab] }}</h1>
@@ -9,7 +9,7 @@
       </v-tabs>
       <v-tabs-items v-model="tab">
         <v-tab-item v-for="(item, index) in itemsToGraph" :key="`${index}-tab`">
-          <v-container class="grey lighten-5" :fluid="false">
+          <v-container class="grey lighten-5" :fluid="true">
             <v-row justify="space-around">
               <v-col cols="12">
                 <cstm-line
@@ -47,7 +47,7 @@ export default {
       time: '',
       items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
-      sesorsAPI: [],
+      sensorsAPI: [],
       // datos por tab de grafica.
       itemsToGraph: [
         {
@@ -81,55 +81,49 @@ export default {
   },
   methods: {
     updateArraySensors({ dataSocket, localSensors }) {
-      return localSensors.map((s) => {
-        const {
-          status: { title },
-          data,
-        } = s;
-        const {
-          labels,
-          datasets: [
-            { label, backgroundColor, borderColor, fill, data: datos },
-          ],
-        } = data;
+      let {
+        data: { labels, datasets },
+      } = localSensors;
+      const labelsForGraph = labels;
+      datasets = datasets.map((s) => {
+        const { label, backgroundColor, borderColor, fill, data: datos } = s;
 
         let sensorsData = dataSocket
           .map((sensor) => {
-            if (sensor.name === title) {
+            if (sensor.name === label) {
               datos.push(sensor.val);
-              if (datos.length > 30) {
-                datos.shift();
-                labels.shift();
-                const lastItem = this.lodash.last(labels);
-                if (lastItem === 60) {
-                  labels.push(1);
-                } else {
-                  labels.push(lastItem + 1);
-                }
-              }
+              if (datos.length > 30) datos.shift();
+
               return {
-                labels,
-                datasets: [
-                  {
-                    label,
-                    backgroundColor,
-                    borderColor,
-                    fill,
-                    data: datos,
-                  },
-                ],
+                label,
+                backgroundColor,
+                borderColor,
+                fill,
+                data: datos,
               };
             }
             return null;
           })
           .filter((d) => d !== null);
         sensorsData = { ...sensorsData[0] };
-        s.data = sensorsData;
+        s = sensorsData;
         return s;
       });
+      if (datasets[0].data.length === 30) {
+        labelsForGraph.shift();
+        const lastItem = this.lodash.last(labelsForGraph);
+        if (lastItem === 60) {
+          labelsForGraph.push(1);
+        } else {
+          labelsForGraph.push(lastItem + 1);
+        }
+      }
+      labels = labelsForGraph;
+      localSensors.data = { labels, datasets };
+      return localSensors;
     },
     updateData({ sensorsP, sensorsT }) {
-      const [pSensors, tSensors] = this.sesorsAPI;
+      const [pSensors, tSensors] = this.itemsToGraph;
 
       const pUpdatedSensors = this.updateArraySensors({
         dataSocket: sensorsP,
@@ -140,10 +134,7 @@ export default {
         dataSocket: sensorsT,
         localSensors: tSensors,
       });
-
-      // console.log('pUpdatedSensors: ', pUpdatedSensors);
-      // console.log('tUpdatedSensors: ', tUpdatedSensors);
-      this.sesorsAPI = [pUpdatedSensors, tUpdatedSensors];
+      this.itemsToGraph = [pUpdatedSensors, tUpdatedSensors];
     },
   },
   watch: {
@@ -154,8 +145,8 @@ export default {
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
     sensorsData({ sensorsP, sensorsT }) {
-      if (this.sesorsAPI.length > 0) {
-        // console.log(this.sesorsAPI);
+      if (this.sensorsAPI.length > 0) {
+        // console.log(this.sensorsAPI);
         this.updateData({ sensorsP, sensorsT });
       }
     },
@@ -167,12 +158,12 @@ export default {
     */
     const { sensorsP, sensorsT } = this.sensorsList;
 
-    this.sesorsAPI = [
+    this.sensorsAPI = [
       this.createArrayToGraph(sensorsP),
       this.createArrayToGraph(sensorsT),
     ];
 
-    const [forTabOne, forTabTwo] = this.sesorsAPI;
+    const [forTabOne, forTabTwo] = this.sensorsAPI;
     this.itemsToGraph[0].data.datasets = forTabOne.map(
       ({
         data: {
@@ -191,6 +182,7 @@ export default {
         return getData;
       },
     );
+    // console.log('itemsToGraph: ',this.itemsToGraph);
     this.unit = this.unitToGraph[this.tab].tag;
     this.time = this.unitsTimeToGraph[this.tab].tag;
   },

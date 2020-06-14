@@ -67,7 +67,7 @@ export const dataDefaultMix = {
         ],
       ],
       // datos a graficar por tab
-      tabsSelect: [
+      /* tabsSelect: [
         [
           ...Array.from(Array(3), (x, idx) => {
             return {
@@ -102,7 +102,7 @@ export const dataDefaultMix = {
             };
           }),
         ],
-      ],
+      ], */
     };
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="grey lighten-5" :fluid="false">
+  <v-container class="grey lighten-5" :fluid="true">
     <!-- <pre>{{ tabsSelectApi }}</pre> -->
     <v-card>
       <v-card-title class="text-center justify-center py-6">
@@ -9,8 +9,8 @@
         <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
       </v-tabs>
       <v-tabs-items v-model="tab">
-        <v-tab-item v-for="(item, index) in sesorsAPI" :key="`${index}-tab`">
-          <v-container class="grey lighten-5" :fluid="false">
+        <v-tab-item v-for="(item, index) in sensorsAPI" :key="`${index}-tab`">
+          <v-container class="grey lighten-5" :fluid="true">
             <v-row justify="space-around">
               <v-col cols="12">
                 <cstm-line
@@ -63,46 +63,12 @@ export default {
       sensorsDefaultToGraph: [{}, {}],
       // select para los sensores
       sensorsToSelect: [[], []],
-      sesorsAPI: [],
+      sensorsAPI: [],
     };
-  },
-  created() {
-    const { sensorsP, sensorsT } = this.sensorsList;
-
-    this.sesorsAPI = [
-      this.createArrayToGraph(sensorsP),
-      this.createArrayToGraph(sensorsT),
-    ];
-    const [forTabOne] = this.sesorsAPI[0];
-    const [forTabTwo] = this.sesorsAPI[1];
-    this.itemsToGraphModel[0] = forTabOne;
-    this.itemsToGraphModel[1] = forTabTwo;
-    this.sensorsDefaultToGraph[0] = {
-      id: forTabOne.id,
-      name: forTabOne.name,
-    };
-    this.sensorsDefaultToGraph[1] = {
-      id: forTabTwo.id,
-      name: forTabTwo.name,
-    };
-    this.unit = this.unitToGraph[this.tab].tag;
-    this.time = this.unitsTimeToGraph[this.tab].tag;
-    this.sensorsToSelect[0] = sensorsP.map(({ id, name }) => {
-      return {
-        id,
-        name,
-      };
-    });
-    this.sensorsToSelect[1] = sensorsT.map(({ id, name }) => {
-      return {
-        id,
-        name,
-      };
-    });
   },
   methods: {
     itemSelected(graph) {
-      const getItem = this.sesorsAPI[this.tab].find((d) => {
+      const getItem = this.sensorsAPI[this.tab].find((d) => {
         return d.id === graph.id;
       });
       this.itemsToGraphModel[this.tab] = getItem;
@@ -157,7 +123,7 @@ export default {
       });
     },
     updateData({ sensorsP, sensorsT }) {
-      const [pSensors, tSensors] = this.sesorsAPI;
+      const [pSensors, tSensors] = this.sensorsAPI;
 
       const pUpdatedSensors = this.updateArraySensors({
         dataSocket: sensorsP,
@@ -168,10 +134,7 @@ export default {
         dataSocket: sensorsT,
         localSensors: tSensors,
       });
-
-      // console.log('pUpdatedSensors: ', pUpdatedSensors);
-      // console.log('tUpdatedSensors: ', tUpdatedSensors);
-      this.sesorsAPI = [pUpdatedSensors, tUpdatedSensors];
+      this.sensorsAPI = [pUpdatedSensors, tUpdatedSensors];
     },
   },
   watch: {
@@ -181,11 +144,45 @@ export default {
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
     sensorsData({ sensorsP, sensorsT }) {
-      if (this.sesorsAPI.length > 0) {
+      if (this.sensorsAPI.length > 0) {
         // console.log(this.sesorsAPI);
         this.updateData({ sensorsP, sensorsT });
       }
     },
+  },
+  beforeMount() {
+    const { sensorsP, sensorsT } = this.sensorsList;
+
+    this.sensorsAPI = [
+      this.createArrayToGraph(sensorsP),
+      this.createArrayToGraph(sensorsT),
+    ];
+    const [forTabOne] = this.sensorsAPI[0];
+    const [forTabTwo] = this.sensorsAPI[1];
+    this.itemsToGraphModel[0] = forTabOne;
+    this.itemsToGraphModel[1] = forTabTwo;
+    this.sensorsDefaultToGraph[0] = {
+      id: forTabOne.id,
+      name: forTabOne.name,
+    };
+    this.sensorsDefaultToGraph[1] = {
+      id: forTabTwo.id,
+      name: forTabTwo.name,
+    };
+    this.unit = this.unitToGraph[this.tab].tag;
+    this.time = this.unitsTimeToGraph[this.tab].tag;
+    this.sensorsToSelect[0] = sensorsP.map(({ id, name }) => {
+      return {
+        id,
+        name,
+      };
+    });
+    this.sensorsToSelect[1] = sensorsT.map(({ id, name }) => {
+      return {
+        id,
+        name,
+      };
+    });
   },
 };
 </script>
