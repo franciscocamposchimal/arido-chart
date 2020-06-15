@@ -2,14 +2,23 @@ import axios from 'axios';
 
 export default {
   state: {
-    sensors: [],
+    sensors: {},
+    sensorsAPI: [],
   },
   getters: {
+    sensorsAPIList(state) {
+      return state.sensorsAPI;
+    },
     sensorsList(state) {
       return state.sensors;
     },
   },
   mutations: {
+    // begin global data
+    SET_SENSOR_API(state, payload) {
+      state.sensorsAPI = payload;
+    },
+    // end global data
     SET_SENSORS(state, payload) {
       state.sensors = payload;
     },
@@ -26,6 +35,7 @@ export default {
     },
   },
   actions: {
+    // getSensorsAPI({ commit }, sensors) {},
     async getSensors({ commit }) {
       await axios
         .get('/sensor/graphic')

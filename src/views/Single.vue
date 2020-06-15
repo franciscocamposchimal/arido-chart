@@ -9,7 +9,7 @@
         <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
       </v-tabs>
       <v-tabs-items v-model="tab">
-        <v-tab-item v-for="(item, index) in sensorsAPI" :key="`${index}-tab`">
+        <v-tab-item v-for="(item, index) in sensorsList" :key="`${index}-tab`">
           <v-container class="grey lighten-5" :fluid="true">
             <v-row justify="space-around">
               <v-col cols="12">
@@ -63,12 +63,11 @@ export default {
       sensorsDefaultToGraph: [{}, {}],
       // select para los sensores
       sensorsToSelect: [[], []],
-      sensorsAPI: [],
     };
   },
   methods: {
     itemSelected(graph) {
-      const getItem = this.sensorsAPI[this.tab].find((d) => {
+      const getItem = this.sensorsList[this.tab].find((d) => {
         return d.id === graph.id;
       });
       this.itemsToGraphModel[this.tab] = getItem;
@@ -123,7 +122,7 @@ export default {
       });
     },
     updateData({ sensorsP, sensorsT }) {
-      const [pSensors, tSensors] = this.sensorsAPI;
+      const [pSensors, tSensors] = this.sensorsToSelect;
 
       const pUpdatedSensors = this.updateArraySensors({
         dataSocket: sensorsP,
@@ -134,7 +133,7 @@ export default {
         dataSocket: sensorsT,
         localSensors: tSensors,
       });
-      this.sensorsAPI = [pUpdatedSensors, tUpdatedSensors];
+      this.sensorsToSelect = [pUpdatedSensors, tUpdatedSensors];
     },
   },
   watch: {
@@ -144,21 +143,14 @@ export default {
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
     sensorsData({ sensorsP, sensorsT }) {
-      if (this.sensorsAPI.length > 0) {
-        // console.log(this.sesorsAPI);
+      if (this.sensorsList.length > 0) {
         this.updateData({ sensorsP, sensorsT });
       }
     },
   },
   beforeMount() {
-    const { sensorsP, sensorsT } = this.sensorsList;
-
-    this.sensorsAPI = [
-      this.createArrayToGraph(sensorsP),
-      this.createArrayToGraph(sensorsT),
-    ];
-    const [forTabOne] = this.sensorsAPI[0];
-    const [forTabTwo] = this.sensorsAPI[1];
+    const [forTabOne] = this.sensorsList[0];
+    const [forTabTwo] = this.sensorsList[1];
     this.itemsToGraphModel[0] = forTabOne;
     this.itemsToGraphModel[1] = forTabTwo;
     this.sensorsDefaultToGraph[0] = {
@@ -171,18 +163,10 @@ export default {
     };
     this.unit = this.unitToGraph[this.tab].tag;
     this.time = this.unitsTimeToGraph[this.tab].tag;
-    this.sensorsToSelect[0] = sensorsP.map(({ id, name }) => {
-      return {
-        id,
-        name,
-      };
-    });
-    this.sensorsToSelect[1] = sensorsT.map(({ id, name }) => {
-      return {
-        id,
-        name,
-      };
-    });
+
+    const [forTabOneG, forTabTwoG] = this.sensorsList;
+    this.sensorsToSelect[0] = forTabOneG;
+    this.sensorsToSelect[1] = forTabTwoG;
   },
 };
 </script>

@@ -13,7 +13,7 @@
       <v-tabs-items v-model="tab">
         <!-- contenidos del tab -->
         <v-tab-item
-          v-for="(itemTab, index) in sensorsAPI"
+          v-for="(itemTab, index) in sensorsList"
           :key="`${index}-tab`"
         >
           <v-container class="grey lighten-5" :fluid="true">
@@ -72,7 +72,6 @@ export default {
       page: [1, 1],
       items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
-      sensorsAPI: [],
       // datos a graficar
       itemsToGraphModel: [],
     };
@@ -187,7 +186,7 @@ export default {
       this.responsiveCharts = !this.responsiveCharts;
     },
     sensorsData({ sensorsP, sensorsT }) {
-      if (this.sensorsAPI.length > 0) {
+      if (this.sensorsList.length > 0) {
         this.updateData({ sensorsP, sensorsT });
       }
     },
@@ -197,14 +196,7 @@ export default {
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
-    const { sensorsP, sensorsT } = this.sensorsList;
-
-    this.sensorsAPI = [
-      this.createArrayToGraph(sensorsP),
-      this.createArrayToGraph(sensorsT),
-    ];
-
-    const [pSensors, tSensors] = this.sensorsAPI;
+    const [pSensors, tSensors] = this.sensorsList;
     this.itemsToGraphModel[0] = pSensors.map((i) => {
       return {
         model: {

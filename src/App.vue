@@ -4,7 +4,7 @@
     <v-content>
       <router-view
         :sensorsData="sensorsData"
-        :sensorsList="sensorsList"
+        :sensorsList="sensorsAPIList"
       ></router-view>
       <TestDialog
         :dialog="isOpenDialog"
@@ -18,11 +18,13 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { methodsGraphMix } from '@/mixins/methodsGraph';
 import Navigation from '@/components/commons/NavBar.vue';
 import TestDialog from './components/commons/TestDialog.vue';
 
 export default {
   name: 'App',
+  mixins: [methodsGraphMix],
   components: {
     Navigation,
     TestDialog,
@@ -41,14 +43,28 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['operatorsList', 'instrumentalistsList', 'sensorsList']),
+    ...mapGetters([
+      'sensorsAPIList',
+      'operatorsList',
+      'instrumentalistsList',
+      'sensorsList',
+    ]),
   },
   async created() {
     await this.$store.dispatch('getSensors');
   },
-  mounted() {
+  beforeMount() {
     this.getOperators();
     this.getInstrumentaslists();
+  },
+  watch: {
+    sensorsList() {
+      const { sensorsP, sensorsT } = this.sensorsList;
+      this.$store.commit('SET_SENSOR_API', [
+        this.createArrayToGraph(sensorsP),
+        this.createArrayToGraph(sensorsT),
+      ]);
+    },
   },
   sockets: {
     connect() {
@@ -58,7 +74,11 @@ export default {
       console.log('disconnected');
     },
     SENSORS_DATA({ sensorsP, sensorsT }) {
-      // console.log('SENSORS_DATA');
+      console.log(this.sensorsList);
+      if(!this.lodash.isEmpty(this.sensorsList)){
+        console.log('NOT EMPTY');
+      }
+      
       this.sensorsData = { sensorsP, sensorsT };
     },
   },

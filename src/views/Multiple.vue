@@ -47,7 +47,6 @@ export default {
       time: '',
       items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
-      sensorsAPI: [],
       // datos por tab de grafica.
       itemsToGraph: [
         {
@@ -80,6 +79,13 @@ export default {
     };
   },
   methods: {
+    timeToLabel(hours) {
+      const toMinutes = Math.floor(hours * 60) / 2;
+      // const toSeconds = Math.floor(hours * 60 * 60);
+      const minutesList = Array.from(Array(toMinutes), (x, index) => index + 1);
+      // console.log(minutesList);
+      return minutesList;
+    },
     updateArraySensors({ dataSocket, localSensors }) {
       let {
         data: { labels, datasets },
@@ -145,8 +151,7 @@ export default {
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
     sensorsData({ sensorsP, sensorsT }) {
-      if (this.sensorsAPI.length > 0) {
-        // console.log(this.sensorsAPI);
+      if (this.sensorsList.length > 0) {
         this.updateData({ sensorsP, sensorsT });
       }
     },
@@ -156,14 +161,7 @@ export default {
        Acciones para variables de inicio 
        antes de que el componente sea montado a la vista.
     */
-    const { sensorsP, sensorsT } = this.sensorsList;
-
-    this.sensorsAPI = [
-      this.createArrayToGraph(sensorsP),
-      this.createArrayToGraph(sensorsT),
-    ];
-
-    const [forTabOne, forTabTwo] = this.sensorsAPI;
+    const [forTabOne, forTabTwo] = this.sensorsList;
     this.itemsToGraph[0].data.datasets = forTabOne.map(
       ({
         data: {
