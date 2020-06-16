@@ -7,9 +7,10 @@
         :dialog="isOpenDialog"
         :opList="operatorsList"
         :instList="instrumentalistsList"
+        :sensorsArr="sensorsData"
         @closeDialog="closeDialog"
       ></TestDialog>
-      <!-- <pre>{{ sensorsAPIList }}</pre> -->
+      <!-- <pre>{{ sensorsList }}</pre> -->
     </v-content>
   </v-app>
 </template>
@@ -29,7 +30,7 @@ export default {
   },
   data: () => ({
     isOpenDialog: false,
-    sensorsData: [],
+    sensorsData: {},
   }),
   methods: {
     ...mapActions(['getOperators', 'getInstrumentaslists']),
@@ -88,6 +89,8 @@ export default {
   watch: {
     sensorsList() {
       const { sensorsP, sensorsT } = this.sensorsList;
+      this.sensorsData = this.sensorsList;
+      // console.log(this.sensorsData);
       this.$store.commit('SET_SENSOR_API', [
         this.createArrayToGraph(sensorsP),
         this.createArrayToGraph(sensorsT),
