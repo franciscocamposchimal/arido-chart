@@ -2,16 +2,14 @@
   <v-app id="inspire">
     <Navigation @openDialog="openDialog"></Navigation>
     <v-content>
-      <router-view
-        :sensorsData="sensorsData"
-        :sensorsList="sensorsAPIList"
-      ></router-view>
+      <router-view :sensorsList="sensorsAPIList"></router-view>
       <TestDialog
         :dialog="isOpenDialog"
         :opList="operatorsList"
         :instList="instrumentalistsList"
         @closeDialog="closeDialog"
       ></TestDialog>
+      <!-- <pre>{{ sensorsAPIList }}</pre> -->
     </v-content>
   </v-app>
 </template>
@@ -40,6 +38,36 @@ export default {
     },
     closeDialog(dialog) {
       this.isOpenDialog = dialog;
+    },
+    setDataSensors({ dataSocket, localSensors }) {
+      localSensors = localSensors.map((s) => {
+        const {
+          status: { title },
+          data: {
+            datasets: [{ data: datos }],
+            labels,
+          },
+        } = s;
+        dataSocket.forEach(({ name, val }) => {
+          if (name === title) {
+            datos.push(val);
+            if (datos.length > 30) {
+              datos.shift();
+              labels.shift();
+              const lastItem = this.lodash.last(labels);
+              if (lastItem === 60) {
+                labels.push(1);
+              } else {
+                labels.push(lastItem + 1);
+              }
+            }
+          }
+        });
+        s.data.labels = labels;
+        s.data.datasets[0].data = datos;
+        return s;
+      });
+      return localSensors;
     },
   },
   computed: {
@@ -74,12 +102,19 @@ export default {
       console.log('disconnected');
     },
     SENSORS_DATA({ sensorsP, sensorsT }) {
-      console.log(this.sensorsList);
-      if(!this.lodash.isEmpty(this.sensorsList)){
-        console.log('NOT EMPTY');
+      // console.log('SENSORS_DATA');
+      if (!this.lodash.isEmpty(this.sensorsList)) {
+        const [pSensors, tSensors] = this.sensorsAPIList;
+        const pSensorResult = this.setDataSensors({
+          dataSocket: sensorsP,
+          localSensors: pSensors,
+        });
+        const tSensorResult = this.setDataSensors({
+          dataSocket: sensorsT,
+          localSensors: tSensors,
+        });
+        this.$store.commit('SET_SENSOR_API', [pSensorResult, tSensorResult]);
       }
-      
-      this.sensorsData = { sensorsP, sensorsT };
     },
   },
 };

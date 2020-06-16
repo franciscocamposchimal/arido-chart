@@ -2,7 +2,7 @@
   <v-container class="grey lighten-5" :fluid="true">
     <v-card>
       <v-card-title class="text-center justify-center py-6">
-        <h1 class="font-weight-bold display-3">Multiple - {{ items[tab] }}</h1>
+        <h2 class="font-weight-bold display-5">Multiple - {{ items[tab] }}</h2>
       </v-card-title>
       <v-tabs v-model="tab">
         <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
@@ -35,7 +35,7 @@ import { dataDefaultMix } from '@/mixins/dataMixin';
 
 export default {
   name: 'Single',
-  props: ['sensorsData', 'sensorsList'],
+  props: ['sensorsList'],
   mixins: [dataDefaultMix],
   components: {
     'cstm-line': LineCustom,
@@ -92,27 +92,17 @@ export default {
       } = localSensors;
       const labelsForGraph = labels;
       datasets = datasets.map((s) => {
-        const { label, backgroundColor, borderColor, fill, data: datos } = s;
+        const { label /* data: datos */ } = s;
 
-        let sensorsData = dataSocket
-          .map((sensor) => {
-            if (sensor.name === label) {
-              datos.push(sensor.val);
-              if (datos.length > 30) datos.shift();
-
-              return {
-                label,
-                backgroundColor,
-                borderColor,
-                fill,
-                data: datos,
-              };
-            }
-            return null;
-          })
-          .filter((d) => d !== null);
-        sensorsData = { ...sensorsData[0] };
-        s = sensorsData;
+        const findDataSocket = dataSocket.find(
+          ({ status: { title: titleSock } }) => {
+            return titleSock === label;
+          },
+        );
+        const {
+          datasets: [{ data: dataSock }],
+        } = findDataSocket.data;
+        s.data = dataSock;
         return s;
       });
       if (datasets[0].data.length === 30) {
@@ -150,10 +140,10 @@ export default {
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
-    sensorsData({ sensorsP, sensorsT }) {
-      if (this.sensorsList.length > 0) {
-        this.updateData({ sensorsP, sensorsT });
-      }
+    sensorsList([sensorsP, sensorsT]) {
+      this.updateData({ sensorsP, sensorsT });
+      // const [pSensors] = this.itemsToGraph;
+      // console.log(pSensors);
     },
   },
   beforeMount() {

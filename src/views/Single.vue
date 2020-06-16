@@ -39,7 +39,7 @@ import { dataDefaultMix } from '@/mixins/dataMixin';
 // :width="300" :height="300"
 export default {
   name: 'Single',
-  props: ['sensorsData', 'sensorsList'],
+  props: ['sensorsList'],
   mixins: [dataDefaultMix],
   components: {
     'cstm-line': LineCustom,
@@ -74,50 +74,23 @@ export default {
       this.responsiveCharts = !this.responsiveCharts;
     },
     updateArraySensors({ dataSocket, localSensors }) {
+      // console.log('SENSORS: ', dataSocket);
       return localSensors.map((s) => {
         const {
           status: { title },
-          data,
         } = s;
-        const {
-          labels,
-          datasets: [
-            { label, backgroundColor, borderColor, fill, data: datos },
-          ],
-        } = data;
+        const findDataSocket = dataSocket.find(
+          ({ status: { title: titleSock } }) => {
+            return titleSock === title;
+          },
+        );
+        const { labels, datasets } = findDataSocket.data;
 
-        let sensorsData = dataSocket
-          .map((sensor) => {
-            if (sensor.name === title) {
-              datos.push(sensor.val);
-              if (datos.length > 30) {
-                datos.shift();
-                labels.shift();
-                const lastItem = this.lodash.last(labels);
-                if (lastItem === 60) {
-                  labels.push(1);
-                } else {
-                  labels.push(lastItem + 1);
-                }
-              }
-              return {
-                labels,
-                datasets: [
-                  {
-                    label,
-                    backgroundColor,
-                    borderColor,
-                    fill,
-                    data: datos,
-                  },
-                ],
-              };
-            }
-            return null;
-          })
-          .filter((d) => d !== null);
-        sensorsData = { ...sensorsData[0] };
-        s.data = sensorsData;
+        s.data = {
+          labels,
+          datasets,
+        };
+        // console.log('FIND: ', findDataSocket);
         return s;
       });
     },
@@ -142,10 +115,9 @@ export default {
       this.unit = this.unitToGraph[tabSelect].tag;
       this.time = this.unitsTimeToGraph[tabSelect].tag;
     },
-    sensorsData({ sensorsP, sensorsT }) {
-      if (this.sensorsList.length > 0) {
-        this.updateData({ sensorsP, sensorsT });
-      }
+    sensorsList([sensorsP, sensorsT]) {
+      this.updateData({ sensorsP, sensorsT });
+      // this.updateArraySensors(sensorsT);
     },
   },
   beforeMount() {
