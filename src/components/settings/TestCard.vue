@@ -1,26 +1,19 @@
 <template>
   <v-card class="mx-auto" max-width="320" tile>
-    <v-list two-line dense>
-      <v-subheader>{{ title }}</v-subheader>
+    <v-list three-line dense>
+      <v-subheader>TESTS</v-subheader>
       <v-list-item-group v-model="itemSelected" color="primary">
-        <v-list-item
-          v-for="staff in staffInternalList"
-          :key="staff.id"
-          two-line
-        >
+        <v-list-item v-for="test in testInternalList" :key="test.id" two-line>
           <v-list-item-icon>
-            <v-icon>mdi-account-hard-hat</v-icon>
+            <v-icon>mdi-clipboard-list</v-icon>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>
-              <v-edit-dialog
-                :return-value.sync="staff.name"
-                @save="save(staff)"
-              >
-                {{ staff.name }}
+              <v-edit-dialog :return-value.sync="test.name" @save="save(test)">
+                {{ test.name }}
                 <template v-slot:input>
                   <v-text-field
-                    v-model="staff.name"
+                    v-model="test.name"
                     :rules="[max25chars]"
                     label="Edit"
                     single-line
@@ -30,17 +23,17 @@
               </v-edit-dialog>
             </v-list-item-title>
             <v-list-item-subtitle
-              class="text--primary"
-              v-text="`Tests ${staff.tests.length}`"
+              v-text="`Op: ${test.operator.name}`"
             ></v-list-item-subtitle>
             <v-list-item-subtitle
-              v-text="$moment(staff.createdAt).format('DD/MM/YYYY HH:mm')"
+              v-text="`Int: ${test.instrumentalist.name}`"
+            ></v-list-item-subtitle>
+            <v-list-item-subtitle
+              v-text="$moment(test.createdAt).format('DD/MM/YYYY HH:mm')"
             ></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
-            <v-icon @click="deleteItem(staff)">
-              {{ staff.tests.length > 0 ? 'mdi-delete-off' : 'mdi-delete' }}
-            </v-icon>
+            <v-icon @click="deleteItem(test)">mdi-delete</v-icon>
           </v-list-item-action>
         </v-list-item>
       </v-list-item-group>
@@ -49,32 +42,27 @@
 </template>
 <script>
 export default {
-  name: 'StaffCard',
-  props: ['title', 'staffList'],
+  name: 'TestCard',
+  props: ['testList'],
   data() {
     return {
       itemSelected: null,
-      staffInternalList: [],
+      testInternalList: [],
       max25chars: (v) => v.length <= 25 || 'Input too long!',
     };
   },
   methods: {
     save(data) {
       // console.log(data);
-      this.$emit('itemToEdit', { table: this.title, data });
+      this.$emit('testToEdit', data);
     },
     deleteItem(data) {
-      if (data.tests.length > 0) {
-        this.itemSelected = null;
-      } else {
-        // console.log('DELETE');
-        this.$emit('itemToDelete', { table: this.title, data });
-      }
+      this.$emit('testToDelete', data);
     },
   },
   watch: {
-    staffList() {
-      this.staffInternalList = this.staffList;
+    testList() {
+      this.testInternalList = this.testList;
     },
   },
 };

@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title>Staff</v-card-title>
           <v-row justify="center" class="pa-5">
-            <v-col cols="6">
+            <v-col cols="4">
               <StaffCard
                 title="OPERATORS"
                 :staffList="operatorsList"
@@ -13,13 +13,16 @@
                 @itemToDelete="deleteStaff"
               ></StaffCard>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="4">
               <StaffCard
                 title="INSTRUMENTALISTS"
                 :staffList="instrumentalistsList"
                 @itemToEdit="editStaff"
                 @itemToDelete="deleteStaff"
               ></StaffCard>
+            </v-col>
+            <v-col cols="4">
+              <TestCard :testList="testList"></TestCard>
             </v-col>
           </v-row>
         </v-card>
@@ -30,10 +33,12 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import StaffCard from '../components/settings/StaffCard.vue';
+import TestCard from '../components/settings/TestCard.vue';
 
 export default {
   name: 'Settings',
   components: {
+    TestCard,
     StaffCard,
   },
   data() {
@@ -45,12 +50,13 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getOperators',
-      'getInstrumentaslists',
-      'updateOperator',
-      'updateInstrumentalist',
       'deleteOp',
+      'getTests',
       'deleteInst',
+      'getOperators',
+      'updateOperator',
+      'getInstrumentaslists',
+      'updateInstrumentalist',
     ]),
     editStaff({ table, data: { id, name } }) {
       if (table === 'OPERATORS') this.updateOperator({ id, name });
@@ -65,11 +71,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['operatorsList', 'instrumentalistsList']),
+    ...mapGetters(['testList', 'operatorsList', 'instrumentalistsList']),
   },
   mounted() {
     this.getOperators();
     this.getInstrumentaslists();
+    this.getTests();
   },
 };
 </script>

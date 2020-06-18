@@ -9,8 +9,9 @@
         :instList="instrumentalistsList"
         :sensorsArr="sensorsData"
         @closeDialog="closeDialog"
+        @createTest="createTest"
       ></TestDialog>
-      <!-- <pre>{{ sensorsList }}</pre> -->
+      <!-- <pre>{{ testList }}</pre> -->
     </v-content>
   </v-app>
 </template>
@@ -39,6 +40,10 @@ export default {
     },
     closeDialog(dialog) {
       this.isOpenDialog = dialog;
+    },
+    createTest(newTest) {
+      this.isOpenDialog = false;
+      console.log(JSON.stringify(newTest));
     },
     setDataSensors({ dataSocket, localSensors }) {
       localSensors = localSensors.map((s) => {
@@ -73,10 +78,10 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'sensorsAPIList',
-      'operatorsList',
-      'instrumentalistsList',
       'sensorsList',
+      'operatorsList',
+      'sensorsAPIList',
+      'instrumentalistsList',
     ]),
   },
   async created() {
