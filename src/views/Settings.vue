@@ -74,9 +74,9 @@ export default {
     ...mapGetters(['testList', 'operatorsList', 'instrumentalistsList']),
   },
   mounted() {
+    this.getTests();
     this.getOperators();
     this.getInstrumentaslists();
-    this.getTests();
   },
 };
 </script>

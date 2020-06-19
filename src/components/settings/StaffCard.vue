@@ -34,7 +34,7 @@
               v-text="`Tests ${staff.tests.length}`"
             ></v-list-item-subtitle>
             <v-list-item-subtitle
-              v-text="$moment(staff.createdAt).format('DD/MM/YYYY HH:mm')"
+              v-text="$moment(staff.createdAt).format('DD/MM/YYYY')"
             ></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>

@@ -42,7 +42,35 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-content>
-            <v-btn small @click="isOpenDialog">CREATE TEST</v-btn>
+            <v-btn small @click="isOpenDialog" :disabled="showTestClock">
+              CREATE TEST
+            </v-btn>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content v-if="showTestClock">
+            <span>
+              {{
+                `${
+                  currentTest.name ? currentTest.name : 'Test'
+                } started ago ...`
+              }}
+            </span>
+            <ClockWatch :dateToChron="currentTest"></ClockWatch>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content v-if="showTestClock">
+            <v-btn
+              small
+              color="red"
+              @click="stopTest"
+              :loading="stopSensorModel"
+              :disabled="stopSensorModel"
+            >
+              STOP TEST
+            </v-btn>
+            <!-- <pre>{{ currentTest }}</pre> -->
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -87,8 +115,15 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+import ClockWatch from './ClockTest.vue';
+
 export default {
   name: 'Navigation',
+  props: ['currentTest'],
+  components: {
+    ClockWatch,
+  },
   data: () => ({
     drawer: null,
     sensorsOnline: false,
@@ -114,10 +149,18 @@ export default {
     isOpenDialog() {
       this.$emit('openDialog', true);
     },
+    async stopTest() {
+      // console.log('STOP');
+      await this.$store.dispatch('stopTest');
+    },
   },
   computed: {
+    ...mapGetters(['stopSensorModel']),
     sensorsIsOnline() {
       return this.sensorsOnline;
+    },
+    showTestClock() {
+      return !this.lodash.isEmpty(this.currentTest);
     },
   },
   sockets: {

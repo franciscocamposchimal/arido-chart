@@ -1,7 +1,11 @@
 <template>
   <v-app id="inspire">
-    <Navigation @openDialog="openDialog"></Navigation>
+    <Navigation
+      :currentTest="testInProgress"
+      @openDialog="openDialog"
+    ></Navigation>
     <v-content>
+      <!-- <pre>{{ testInProgress }}</pre> -->
       <router-view :sensorsList="sensorsAPIList"></router-view>
       <TestDialog
         :dialog="isOpenDialog"
@@ -41,9 +45,9 @@ export default {
     closeDialog(dialog) {
       this.isOpenDialog = dialog;
     },
-    createTest(newTest) {
+    async createTest(newTest) {
       this.isOpenDialog = false;
-      console.log(JSON.stringify(newTest));
+      await this.$store.dispatch('createTest', newTest);
     },
     setDataSensors({ dataSocket, localSensors }) {
       localSensors = localSensors.map((s) => {
@@ -80,12 +84,14 @@ export default {
     ...mapGetters([
       'sensorsList',
       'operatorsList',
+      'testInProgress',
       'sensorsAPIList',
       'instrumentalistsList',
     ]),
   },
   async created() {
     await this.$store.dispatch('getSensors');
+    await this.$store.dispatch('getTestInProgress');
   },
   beforeMount() {
     this.getOperators();

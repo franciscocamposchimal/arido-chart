@@ -23,17 +23,39 @@
               </v-edit-dialog>
             </v-list-item-title>
             <v-list-item-subtitle
-              v-text="`Op: ${test.operator.name}`"
+              v-text="
+                `Init: ${$moment(test.dateInit, 'DD/MM/YYYY HH:mm').format(
+                  'DD/MM/YYYY HH:mm',
+                )}`
+              "
             ></v-list-item-subtitle>
             <v-list-item-subtitle
-              v-text="`Int: ${test.instrumentalist.name}`"
+              v-text="
+                `End: ${
+                  $moment(test.dateEnd, 'DD/MM/YYYY HH:mm').format(
+                    'DD/MM/YYYY HH:mm',
+                  ) === 'Fecha invalida'
+                    ? 'In progress..'
+                    : $moment(test.dateEnd, 'DD/MM/YYYY HH:mm').format(
+                        'DD/MM/YYYY HH:mm',
+                      )
+                }`
+              "
             ></v-list-item-subtitle>
-            <v-list-item-subtitle
-              v-text="$moment(test.createdAt).format('DD/MM/YYYY HH:mm')"
-            ></v-list-item-subtitle>
+            <!-- <v-list-item-subtitle
+              v-text="$moment(test.dateInit, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm')"
+            ></v-list-item-subtitle> -->
           </v-list-item-content>
           <v-list-item-action>
-            <v-icon @click="deleteItem(test)">mdi-delete</v-icon>
+            <v-icon @click="deleteItem(test)">
+              {{
+                $moment(test.dateEnd, 'DD/MM/YYYY HH:mm').format(
+                  'DD/MM/YYYY HH:mm',
+                ) === 'Fecha invalida'
+                  ? 'mdi-delete-off'
+                  : 'mdi-delete'
+              }}
+            </v-icon>
           </v-list-item-action>
         </v-list-item>
       </v-list-item-group>
