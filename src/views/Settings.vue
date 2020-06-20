@@ -4,8 +4,9 @@
       <v-col cols="12">
         <v-card>
           <v-card-title>Staff</v-card-title>
+          <v-divider></v-divider>
           <v-row justify="center" class="pa-5">
-            <v-col cols="4">
+            <v-col cols="6">
               <StaffCard
                 title="OPERATORS"
                 :staffList="operatorsList"
@@ -13,7 +14,7 @@
                 @itemToDelete="deleteStaff"
               ></StaffCard>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="6">
               <StaffCard
                 title="INSTRUMENTALISTS"
                 :staffList="instrumentalistsList"
@@ -21,8 +22,29 @@
                 @itemToDelete="deleteStaff"
               ></StaffCard>
             </v-col>
+          </v-row>
+          <v-card-title>Utils</v-card-title>
+          <v-divider></v-divider>
+          <v-row justify="center" class="pa-5">
             <v-col cols="4">
-              <TestCard :testList="testList"></TestCard>
+              <SensorCard
+                typeSensor="TEMPERATURE"
+                :cardList="sensorsList.sensorsT"
+                @sensorToEdit="editSensor"
+              ></SensorCard>
+            </v-col>
+            <v-col cols="4">
+              <SensorCard
+                typeSensor="PRESSURE"
+                :cardList="sensorsList.sensorsP"
+                @sensorToEdit="editSensor"
+              ></SensorCard>
+            </v-col>
+            <v-col cols="4">
+              <TestCard
+                :testList="testList"
+                @testToDelete="deleteTestItem"
+              ></TestCard>
             </v-col>
           </v-row>
         </v-card>
@@ -34,12 +56,14 @@
 import { mapActions, mapGetters } from 'vuex';
 import StaffCard from '../components/settings/StaffCard.vue';
 import TestCard from '../components/settings/TestCard.vue';
+import SensorCard from '../components/settings/SensorCard.vue';
 
 export default {
   name: 'Settings',
   components: {
     TestCard,
     StaffCard,
+    SensorCard,
   },
   data() {
     return {
@@ -52,7 +76,9 @@ export default {
     ...mapActions([
       'deleteOp',
       'getTests',
+      'updateSens',
       'deleteInst',
+      'deleteTest',
       'getOperators',
       'updateOperator',
       'getInstrumentaslists',
@@ -69,9 +95,22 @@ export default {
       if (table === 'OPERATORS') this.deleteOp({ id });
       if (table === 'INSTRUMENTALISTS') this.deleteInst({ id });
     },
+    deleteTestItem({ id }) {
+      // console.log(id);
+      this.deleteTest({ id });
+    },
+    editSensor(sens) {
+      this.updateSens(sens);
+    },
   },
   computed: {
-    ...mapGetters(['testList', 'operatorsList', 'instrumentalistsList']),
+    ...mapGetters([
+      'testList',
+      'sensorsList',
+      'operatorsList',
+      'instrumentalistsList',
+      'getApiResponse',
+    ]),
   },
   mounted() {
     this.getTests();

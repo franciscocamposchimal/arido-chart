@@ -107,6 +107,7 @@ export default {
         localSensors: tSensors,
       });
       this.sensorsToSelect = [pUpdatedSensors, tUpdatedSensors];
+      // console.log(this.sensorsToSelect );
     },
   },
   watch: {

@@ -116,7 +116,7 @@ export default {
       console.log('disconnected');
     },
     SENSORS_DATA({ sensorsP, sensorsT }) {
-      // console.log('SENSORS_DATA');
+      // console.log('SENSORS_DATA',sensorsT);
       if (!this.lodash.isEmpty(this.sensorsList)) {
         const [pSensors, tSensors] = this.sensorsAPIList;
         const pSensorResult = this.setDataSensors({
@@ -127,6 +127,7 @@ export default {
           dataSocket: sensorsT,
           localSensors: tSensors,
         });
+        // console.log('SENSORS_DATA',pSensorResult);
         this.$store.commit('SET_SENSOR_API', [pSensorResult, tSensorResult]);
       }
     },

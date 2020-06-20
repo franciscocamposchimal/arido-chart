@@ -7,6 +7,7 @@ import Vue from 'vue';
 import moment from 'moment';
 import VueMoment from 'vue-moment';
 import axios from 'axios';
+import JsonExcel from 'vue-json-excel';
 import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
@@ -25,11 +26,11 @@ axios.defaults.baseURL = serverUrl;
 const socket = io(serverUrl);
 
 Vue.config.productionTip = false;
-
 Vue.use(VueMoment, { moment });
 Vue.use(VueSocketIOExt, socket);
 Vue.use(VueLodash, { lodash });
 Vue.use(DatetimePicker);
+Vue.component('downloadExcel', JsonExcel);
 
 new Vue({
   router,

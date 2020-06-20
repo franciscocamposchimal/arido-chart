@@ -2,6 +2,7 @@
   <v-card class="mx-auto" max-width="320" tile>
     <v-list two-line dense>
       <v-subheader>{{ title }}</v-subheader>
+      <v-divider></v-divider>
       <v-list-item-group v-model="itemSelected" color="primary">
         <v-list-item
           v-for="staff in staffInternalList"
@@ -55,7 +56,7 @@ export default {
     return {
       itemSelected: null,
       staffInternalList: [],
-      max25chars: (v) => v.length <= 25 || 'Input too long!',
+      max25chars: (v) => v.length <= 25 || 'Name too long!',
     };
   },
   methods: {

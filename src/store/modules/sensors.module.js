@@ -55,13 +55,13 @@ export default {
           },
         );
     },
-    updateSens({ commit }, { id, name, tag }) {
+    updateSens({ commit, dispatch }, { id, name }) {
       axios
-        .put(`/sensor/${id}`, { name, tag })
-        .then(({ data, status }) => {
+        .put(`/sensor/${id}`, { name })
+        .then(({ status }) => {
           // console.log('PUT SENS: ', data);
           commit('SET_API_RESP', { status, message: 'Put sensor success.' });
-          commit('UPDATE_SENSOR', data);
+          // commit('UPDATE_SENSOR', data);
         })
         .catch(
           ({
@@ -72,7 +72,10 @@ export default {
             // console.log(`${statusCode} ${error}`);
             commit('SET_API_RESP', { status: statusCode, message: error });
           },
-        );
+        )
+        .finally(() => {
+          dispatch('getSensors');
+        });
     },
     deleteSens({ commit }, { id }) {
       axios

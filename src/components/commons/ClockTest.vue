@@ -26,7 +26,7 @@ export default {
       this.seconds = this.dateToUpdate.format('ss');
     },
     initClock() {
-      console.log(this.dateToChron);
+      // console.log(this.dateToChron);
       const dateToParse = this.$moment(
         this.dateToChron.dateInit,
         'DD/MM/YYYY HH:mm:ss',
@@ -50,7 +50,7 @@ export default {
     },
   },
   mounted() {
-    console.log('MOUNT FIRE');
+    // console.log('MOUNT FIRE');
     this.initClock();
   },
   beforeDestroy() {
