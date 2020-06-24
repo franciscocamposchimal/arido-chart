@@ -54,7 +54,7 @@ export default {
     this.initClock();
   },
   beforeDestroy() {
-    console.log('DESTROY FIRE');
+    // console.log('DESTROY FIRE');
     clearInterval(this.$options.interval);
   },
   watch: {

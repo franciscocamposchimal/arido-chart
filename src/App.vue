@@ -104,10 +104,10 @@ export default {
   },
   sockets: {
     connect() {
-      console.log('socket connected');
+      // console.log('socket connected');
     },
     disconnect() {
-      console.log('disconnected');
+      // console.log('disconnected');
     },
     SENSORS_DATA({ date, sensorsP, sensorsT }) {
       // console.log('SENSORS_DATA', date);

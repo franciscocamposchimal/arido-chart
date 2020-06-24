@@ -148,8 +148,8 @@ export default {
       this.$emit('timeSelected', { selectedItem, id: this.idItem });
     },
     // click en la grafica
-    clickEventListener(point) {
-      console.log('point ', point);
+    clickEventListener() {
+      // console.log('point ', point);
       // console.log('elements ', elements);
     },
   },
