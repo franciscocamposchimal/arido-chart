@@ -49,31 +49,25 @@ export default {
       this.isOpenDialog = false;
       await this.$store.dispatch('createTest', newTest);
     },
-    setDataSensors({ dataSocket, localSensors }) {
+    setDataSensors({ date, dataSocket, localSensors }) {
       localSensors = localSensors.map((s) => {
         const {
           status: { title },
           data: {
             datasets: [{ data: datos }],
-            labels,
           },
         } = s;
         dataSocket.forEach(({ name, val }) => {
           if (name === title) {
-            datos.push(val);
+            datos.push({
+              x: this.$moment(date, 'DD/MM/YYYY h:mm:ss a'),
+              y: val,
+            });
             if (datos.length > 30) {
               datos.shift();
-              labels.shift();
-              const lastItem = this.lodash.last(labels);
-              if (lastItem === 60) {
-                labels.push(1);
-              } else {
-                labels.push(lastItem + 1);
-              }
             }
           }
         });
-        s.data.labels = labels;
         s.data.datasets[0].data = datos;
         return s;
       });
@@ -115,19 +109,21 @@ export default {
     disconnect() {
       console.log('disconnected');
     },
-    SENSORS_DATA({ sensorsP, sensorsT }) {
-      // console.log('SENSORS_DATA',sensorsT);
+    SENSORS_DATA({ date, sensorsP, sensorsT }) {
+      // console.log('SENSORS_DATA', date);
       if (!this.lodash.isEmpty(this.sensorsList)) {
         const [pSensors, tSensors] = this.sensorsAPIList;
         const pSensorResult = this.setDataSensors({
+          date,
           dataSocket: sensorsP,
           localSensors: pSensors,
         });
         const tSensorResult = this.setDataSensors({
+          date,
           dataSocket: sensorsT,
           localSensors: tSensors,
         });
-        // console.log('SENSORS_DATA',pSensorResult);
+        // console.log('SENSORS_DATA', pSensorResult);
         this.$store.commit('SET_SENSOR_API', [pSensorResult, tSensorResult]);
       }
     },

@@ -1,12 +1,8 @@
 <template>
   <v-card class="pa-2" outlined tile elevation="4">
     <v-card-text>
-      <v-row no-gutters justify="space-between" align="center">
-        <v-col cols="2">
-          {{ defaultStatus.title }}
-          <v-icon :color="defaultStatus.color">{{ defaultStatus.icon }}</v-icon>
-        </v-col>
-        <v-col cols="2" v-if="sensorsSelect.length > 0">
+      <v-row no-gutters justify="space-around">
+        <v-col cols="3" v-if="sensorsSelect.length > 0">
           <v-select
             label="Sensors"
             v-model="sensorModelDefault"
@@ -15,11 +11,10 @@
             item-value="id"
             @change="sensorSelected"
             return-object
-            outlined
             dense
           ></v-select>
         </v-col>
-        <v-col :cols="sensorsSelect.length > 0 ? 2 : 3">
+        <v-col cols="3">
           <v-select
             label="Units"
             v-model="unitModelDefault"
@@ -28,11 +23,10 @@
             item-value="tag"
             @change="unitSelected"
             return-object
-            outlined
             dense
           ></v-select>
         </v-col>
-        <v-col :cols="sensorsSelect.length > 0 ? 2 : 3">
+        <v-col cols="3">
           <v-select
             label="Time"
             v-model="unitTimeModelDefault"
@@ -41,7 +35,6 @@
             item-value="tag"
             @change="timeSelected"
             return-object
-            outlined
             dense
           ></v-select>
         </v-col>
@@ -66,7 +59,7 @@ export default {
       required: true,
       default: () => {
         return {
-          labels: [],
+          // labels: [],
           datasets: [],
         };
       },
@@ -127,7 +120,7 @@ export default {
     return {
       // values for reactive options chart
       unit: '',
-      time: '',
+      time: 'minute',
       responsive: true,
       // selected defautl sensot
       sensorModelDefault: {},
@@ -172,17 +165,21 @@ export default {
           xAxes: [
             {
               // display: true,
+              type: 'time',
+              time: {
+                unit: this.time,
+              },
               scaleLabel: {
                 display: true,
                 labelString: `Time (${this.time})`,
               },
-              ticks: {
+              /* ticks: {
                 min: 0,
                 stepSize: 1,
                 /* callback: (value) => {
                   return `${value}${this.time}`;
-                }, */
-              },
+                },
+              }, */
             },
           ],
           yAxes: [
@@ -195,13 +192,13 @@ export default {
               ticks: {
                 min: 0,
                 max: 500,
-                stepSize: 100,
+                stepSize: 50,
                 /* callback: (value) => {
                   return ;
                 }, */
               },
               gridLines: {
-                drawBorder: false,
+                drawBorder: true,
                 color: ['red', 'green'],
               },
             },

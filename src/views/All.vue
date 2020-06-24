@@ -3,55 +3,42 @@
     <v-card>
       <!-- Titulo -->
       <v-card-title class="text-center justify-center py-6">
-        <h2 class="font-weight-bold display-5">{{ items[tab] }}</h2>
+        <h2 class="font-weight-bold display-5">Pressure & Temperature</h2>
       </v-card-title>
-      <!-- Cabeceras de los tabs -->
-      <v-tabs v-model="tab">
-        <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
-      </v-tabs>
-      <!-- Contenedor de los tabs -->
-      <v-tabs-items v-model="tab">
-        <!-- contenidos del tab -->
-        <v-tab-item
-          v-for="(itemTab, index) in sensorsList"
-          :key="`${index}-tab`"
-        >
-          <v-container class="grey lighten-5" :fluid="true">
-            <!-- Pagination -->
-            <div class="text-center">
-              <v-pagination
-                v-if="itemTab.length > 2"
-                v-model="page[tab]"
-                :length="paginationSize(itemTab)"
-                circle
-              ></v-pagination>
-            </div>
-            <v-row justify="center">
-              <v-col
-                cols="6"
-                v-for="(chart, idx) in chunkGraphs(
-                  itemsToGraphModel,
-                  page[tab] - 1,
-                )"
-                :key="`${idx}-chart`"
-              >
-                <cstm-line
-                  :idItem="chart.id"
-                  :chartData="chart.data"
-                  :defaultStatus="chart.status"
-                  :unitModelToSelect="chart.model.unitToGraph"
-                  :unitsTimeModelToSelect="chart.model.unitsTimeToGraph"
-                  :unitSelect="unitsToSelect[tab]"
-                  :unitTimeSelect="unitsTimeToSelect"
-                  :responsiveChart="responsiveCharts"
-                  @unitSelected="unitModelSelected"
-                  @timeSelected="timeModelSelected"
-                ></cstm-line>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-      </v-tabs-items>
+      <v-container class="grey lighten-5" :fluid="true">
+        <v-row justify="center">
+          <v-col cols="6">
+            <cstm-line
+              :idItem="sensorLeftDef.id"
+              :sensorsSelect="itemsToGraphModel"
+              :sensorModelToSelect="sensorLeftDef"
+              :unitModelToSelect="unitToGraph[leftUnitSelect]"
+              :unitSelect="unitsToSelect[leftUnitSelect]"
+              :unitsTimeModelToSelect="unitsTimeToGraph[0]"
+              :unitTimeSelect="unitsTimeToSelect"
+              :chartData="sensorLeftDef.data"
+              :defaultStatus="itemsToGraphModel[0].status"
+              :responsiveChart="responsiveCharts"
+              @sensorSelected="leftSensorGraph"
+            ></cstm-line>
+          </v-col>
+          <v-col cols="6">
+            <cstm-line
+              :idItem="sensorRiDef.id"
+              :sensorsSelect="itemsToGraphModel"
+              :sensorModelToSelect="sensorRiDef"
+              :unitModelToSelect="unitToGraph[riUnitSelect]"
+              :unitSelect="unitsToSelect[riUnitSelect]"
+              :unitsTimeModelToSelect="unitsTimeToGraph[0]"
+              :unitTimeSelect="unitsTimeToSelect"
+              :chartData="sensorRiDef.data"
+              :defaultStatus="itemsToGraphModel[0].status"
+              :responsiveChart="responsiveCharts"
+              @sensorSelected="riSensorGraph"
+            ></cstm-line>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </v-container>
 </template>
@@ -68,52 +55,42 @@ export default {
   },
   data() {
     return {
-      tab: 0,
-      page: [1, 1],
-      items: ['Pressure', 'Temperature'],
+      // items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
       // datos a graficar
       itemsToGraphModel: [],
+      leftUnitSelect: 0,
+      riUnitSelect: 1,
+      leftSensorDefault: {},
+      riSensorDefault: {},
     };
   },
+  computed: {
+    sensorLeftDef() {
+      return this.leftSensorDefault;
+    },
+    sensorRiDef() {
+      return this.riSensorDefault;
+    },
+  },
   methods: {
-    paginationSize(itemTab) {
-      const sizeDiv = Math.floor(itemTab.length / 2);
-      const isNone = itemTab.length % 2;
-      return isNone ? sizeDiv + 1 : sizeDiv;
+    leftSensorGraph(sensor) {
+      this.leftSensorDefault = sensor;
+      const { name } = sensor;
+      if (name.includes('SensorP')) {
+        this.leftUnitSelect = 0;
+      } else {
+        this.leftUnitSelect = 1;
+      }
     },
-    // dividir el arreglo en grupos de a 2 y sobrantes
-    chunkGraphs(charts, page) {
-      const chunkIt = this.lodash.chunk(charts[this.tab], 2);
-      return chunkIt[page];
-    },
-    // evento para el cambio de unidad
-    unitModelSelected(value) {
-      // console.log('father');
-      this.itemsToGraphModel[this.tab] = this.itemsToGraphModel[this.tab].map(
-        (i) => {
-          if (i.id === value.id) {
-            /* eslint no-param-reassign: ["error", { "props": false }] */
-            i.model.unitToGraph = value.selectedItem;
-            return i;
-          }
-          return i;
-        },
-      );
-      // console.log(this.itemsToGraphModel[this.tab]);
-    },
-    // evento para el cambio de tiempo
-    timeModelSelected(value) {
-      this.itemsToGraphModel[this.tab] = this.itemsToGraphModel[this.tab].map(
-        (i) => {
-          if (i.id === value.id) {
-            /* eslint no-param-reassign: ["error", { "props": false }] */
-            i.model.unitsTimeToGraph = value.selectedItem;
-            return i;
-          }
-          return i;
-        },
-      );
+    riSensorGraph(sensor) {
+      this.riSensorDefault = sensor;
+      const { name } = sensor;
+      if (name.includes('SensorP')) {
+        this.riUnitSelect = 0;
+      } else {
+        this.riUnitSelect = 1;
+      }
     },
     updateArraySensors({ dataSocket, localSensors }) {
       // console.log(localSensors);
@@ -126,30 +103,20 @@ export default {
             return titleSock === title;
           },
         );
-        const { labels, datasets } = findDataSocket.data;
+        const { datasets } = findDataSocket.data;
 
-        s.data = {
-          labels,
-          datasets,
-        };
+        s.data = { datasets };
         // console.log('FIND: ', findDataSocket);
         return s;
       });
     },
     updateData({ sensorsP, sensorsT }) {
-      const [pSensors, tSensors] = this.itemsToGraphModel;
-
-      const pUpdatedSensors = this.updateArraySensors({
-        dataSocket: sensorsP,
-        localSensors: pSensors,
-      });
-
-      const tUpdatedSensors = this.updateArraySensors({
-        dataSocket: sensorsT,
-        localSensors: tSensors,
+      const updatedSensors = this.updateArraySensors({
+        dataSocket: [...sensorsP, ...sensorsT],
+        localSensors: this.itemsToGraphModel,
       });
       // console.log(pUpdatedSensors);
-      this.itemsToGraphModel = [pUpdatedSensors, tUpdatedSensors];
+      this.itemsToGraphModel = updatedSensors;
     },
   },
   watch: {
@@ -158,48 +125,23 @@ export default {
       this.responsiveCharts = !this.responsiveCharts;
     },
     sensorsList([sensorsP, sensorsT]) {
+      // console.log([sensorsP, sensorsT]);
       this.updateData({ sensorsP, sensorsT });
       // this.updateArraySensors(sensorsT);
     },
   },
   beforeMount() {
-    /* 
-       Acciones para variables de inicio 
+    /*
+       Acciones para variables de inicio
        antes de que el componente sea montado a la vista.
     */
     const [pSensors, tSensors] = this.sensorsList;
-    this.itemsToGraphModel[0] = pSensors.map((i) => {
-      return {
-        model: {
-          unitToGraph: {
-            tag: 'PSI',
-            name: '(PSI) Pounds per square inch',
-          },
-          unitsTimeToGraph: {
-            tag: 'min',
-            name: '(min) Minutes',
-          },
-        },
-        ...i,
-      };
-    });
-    this.itemsToGraphModel[1] = tSensors.map((i) => {
-      return {
-        model: {
-          unitToGraph: {
-            tag: 'ºC',
-            name: '(ºC) Celsius',
-          },
-          unitsTimeToGraph: {
-            tag: 'min',
-            name: '(min) Minutes',
-          },
-        },
-        ...i,
-      };
-    });
-    // console.log(this.itemsToGraphModel);
-    // this.time = this.unitsTimeToGraph[this.tab].tag;
+    this.itemsToGraphModel = [...pSensors, ...tSensors];
+    const [leftS] = pSensors;
+    const [riS] = tSensors;
+    this.leftSensorDefault = leftS;
+    this.riSensorDefault = riS;
+    // console.log('ITEMS ', this.itemsToGraphModel);
   },
 };
 </script>

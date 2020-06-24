@@ -54,7 +54,7 @@ export const methodsGraphMix = {
             color: 'green',
           },
           data: {
-            labels: this.timeToLabel(1),
+            // labels: [],
             datasets: [this.fillDataZero(tag, 5000000)],
           },
         };

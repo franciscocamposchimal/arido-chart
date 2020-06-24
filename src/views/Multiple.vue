@@ -58,7 +58,7 @@ export default {
             color: '',
           },
           data: {
-            labels: this.timeToLabel(1),
+            // labels: [],
             datasets: [],
           },
         },
@@ -71,7 +71,7 @@ export default {
             color: '',
           },
           data: {
-            labels: this.timeToLabel(1),
+            // labels: [],
             datasets: [],
           },
         },
@@ -79,19 +79,12 @@ export default {
     };
   },
   methods: {
-    timeToLabel(hours) {
-      const toMinutes = Math.floor(hours * 60) / 2;
-      // const toSeconds = Math.floor(hours * 60 * 60);
-      const minutesList = Array.from(Array(toMinutes), (x, index) => index + 1);
-      // console.log(minutesList);
-      return minutesList;
-    },
     updateArraySensors({ dataSocket, localSensors }) {
-      let {
-        data: { labels, datasets },
+      const {
+        data: { datasets },
       } = localSensors;
-      const labelsForGraph = labels;
-      datasets = datasets.map((s) => {
+      // console.log(datasets);
+      const newDatasets = datasets.map((s) => {
         const { label /* data: datos */ } = s;
 
         const findDataSocket = dataSocket.find(
@@ -105,22 +98,17 @@ export default {
         s.data = dataSock;
         return s;
       });
-      if (datasets[0].data.length === 30) {
-        labelsForGraph.shift();
-        const lastItem = this.lodash.last(labelsForGraph);
-        if (lastItem === 60) {
-          labelsForGraph.push(1);
-        } else {
-          labelsForGraph.push(lastItem + 1);
-        }
-      }
-      labels = labelsForGraph;
-      localSensors.data = { labels, datasets };
+
+      // console.log('LOCALDATA ', localSensors.data);
+      localSensors.data = {
+        datasets: newDatasets,
+      };
+
       return localSensors;
     },
     updateData({ sensorsP, sensorsT }) {
       const [pSensors, tSensors] = this.itemsToGraph;
-
+      // console.log('before itemsToGraph ', this.itemsToGraph);
       const pUpdatedSensors = this.updateArraySensors({
         dataSocket: sensorsP,
         localSensors: pSensors,
@@ -130,7 +118,9 @@ export default {
         dataSocket: sensorsT,
         localSensors: tSensors,
       });
+
       this.itemsToGraph = [pUpdatedSensors, tUpdatedSensors];
+      // console.log('after itemsToGraph ', this.itemsToGraph);
     },
   },
   watch: {

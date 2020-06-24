@@ -84,10 +84,9 @@ export default {
             return titleSock === title;
           },
         );
-        const { labels, datasets } = findDataSocket.data;
+        const { datasets } = findDataSocket.data;
 
         s.data = {
-          labels,
           datasets,
         };
         // console.log('FIND: ', findDataSocket);

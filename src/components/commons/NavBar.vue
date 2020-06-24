@@ -129,6 +129,11 @@ export default {
     sensorsOnline: false,
     items: [
       {
+        name: 'Home',
+        icon: 'mdi-home-analytics',
+        link: '/',
+      },
+      {
         name: 'Single',
         icon: 'mdi-chart-bell-curve-cumulative',
         link: '/single',

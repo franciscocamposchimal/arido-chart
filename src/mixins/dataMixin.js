@@ -6,11 +6,11 @@ export const dataDefaultMix = {
       // datos por tabs de selects
       unitsTimeToGraph: [
         {
-          tag: 'min',
+          tag: 'minute',
           name: '(min) Minutes',
         },
         {
-          tag: 'min',
+          tag: 'minute',
           name: '(min) Minutes',
         },
       ],
@@ -27,15 +27,15 @@ export const dataDefaultMix = {
       // selects para el tiempo
       unitsTimeToSelect: [
         {
-          tag: 'min',
+          tag: 'minute',
           name: '(min) Minutes',
         },
         {
-          tag: 'seg',
+          tag: 'second',
           name: '(s) Seconds',
         },
         {
-          tag: 'hr',
+          tag: 'hour',
           name: '(hr) Hours',
         },
       ],
