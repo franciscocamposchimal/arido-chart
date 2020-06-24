@@ -83,7 +83,10 @@
       fixed
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title style="cursor: pointer" @click="$router.push('/')">
+      <v-toolbar-title
+        style="cursor: pointer"
+        @click="$router.push('/').catch((err) => {})"
+      >
         <v-img
           :src="require('@/assets/argosLogo.svg')"
           height="50%"
