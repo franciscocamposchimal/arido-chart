@@ -1,7 +1,7 @@
 module.exports = {
   transpileDependencies: ['vuetify'],
   devServer: {
-    https: true,
+    // https: true,
     disableHostCheck: true,
     // host: 'localhost'
     // public: 'https://argos.arido.dev'
