@@ -38,6 +38,18 @@
             dense
           ></v-select>
         </v-col>
+        <v-col cols="3" v-if="isTwoY">
+          <v-select
+            label="Units"
+            v-model="unitModelDefaultMulti"
+            :items="unitSelectMulti"
+            item-text="name"
+            item-value="tag"
+            @change="unitSelectedMulti"
+            return-object
+            dense
+          ></v-select>
+        </v-col>
       </v-row>
     </v-card-text>
     <line-chart :chart-data="chartData" :options="optionsChart"></line-chart>
@@ -90,6 +102,9 @@ export default {
       type: Object,
       required: true,
     },
+    unitModelToSelectMulti: {
+      type: Object,
+    },
     unitsTimeModelToSelect: {
       type: Object,
       required: true,
@@ -104,6 +119,10 @@ export default {
       required: true,
       default: () => [],
     },
+    unitSelectMulti: {
+      type: Array,
+      default: () => [],
+    },
     unitTimeSelect: {
       type: Array,
       required: true,
@@ -115,17 +134,23 @@ export default {
       required: true,
       default: true,
     },
+    isTwoY: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       // values for reactive options chart
       unit: '',
+      unitMulti: '',
       time: 'minute',
       responsive: true,
       // selected defautl sensot
       sensorModelDefault: {},
       // selected default unit
       unitModelDefault: {},
+      unitModelDefaultMulti: {},
       // selected default time
       unitTimeModelDefault: {},
     };
@@ -142,6 +167,10 @@ export default {
       this.unit = selectedItem.tag;
       this.$emit('unitSelected', { selectedItem, id: this.idItem });
     },
+    unitSelectedMulti(selectedItem) {
+      // console.log('emit-selectedItem ', selectedItem);
+      this.unitMulti = selectedItem.tag;
+    },
     // evento para el cambio de tiempo
     timeSelected(selectedItem) {
       this.time = selectedItem.tag;
@@ -155,6 +184,74 @@ export default {
   },
   computed: {
     // opciones de vista de la frafica
+    twoYAxes() {
+      if (!this.isTwoY) {
+        return [
+          {
+            // display: true,
+            id: 'A',
+            position: 'left',
+            scaleLabel: {
+              display: true,
+              labelString: this.unit,
+            },
+            ticks: {
+              min: 0,
+              max: 500,
+              stepSize: 50,
+              /* callback: (value) => {
+                  return ;
+                }, */
+            },
+            gridLines: {
+              drawBorder: true,
+              color: ['red', 'green'],
+            },
+          },
+        ];
+      }
+      return [
+        {
+          // display: true,
+          id: 'A',
+          position: 'left',
+          scaleLabel: {
+            display: true,
+            labelString: this.unit,
+          },
+          ticks: {
+            min: 0,
+            max: 500,
+            stepSize: 50,
+            /* callback: (value) => {
+              console.log(value);
+              return value;
+            }, */
+          },
+          gridLines: {
+            drawBorder: true,
+            color: ['red', 'green'],
+          },
+        },
+        {
+          // display: true,
+          id: 'B',
+          position: 'right',
+          scaleLabel: {
+            display: true,
+            labelString: this.unitMulti,
+          },
+          ticks: {
+            min: 0,
+            max: 500,
+            stepSize: 50,
+            /* callback: (value) => {
+                  return ;
+                }, */
+          },
+        },
+      ];
+    },
     optionsChart() {
       return {
         responsive: this.responsive,
@@ -182,27 +279,7 @@ export default {
               }, */
             },
           ],
-          yAxes: [
-            {
-              // display: true,
-              scaleLabel: {
-                display: true,
-                labelString: this.unit,
-              },
-              ticks: {
-                min: 0,
-                max: 500,
-                stepSize: 50,
-                /* callback: (value) => {
-                  return ;
-                }, */
-              },
-              gridLines: {
-                drawBorder: true,
-                color: ['red', 'green'],
-              },
-            },
-          ],
+          yAxes: this.twoYAxes,
         },
       };
     },
@@ -210,9 +287,11 @@ export default {
   mounted() {
     this.responsive = true;
     this.unit = this.unitModelToSelect.tag;
+    if (this.isTwoY) this.unitMulti = this.unitModelToSelectMulti.tag;
     this.time = this.unitsTimeModelToSelect.tag;
     this.sensorModelDefault = this.sensorModelToSelect;
     this.unitModelDefault = this.unitModelToSelect;
+    if (this.isTwoY) this.unitModelDefaultMulti = this.unitModelToSelectMulti;
     this.unitTimeModelDefault = this.unitsTimeModelToSelect;
     // this.chartData = this.dataToGraph;
   },
@@ -227,6 +306,11 @@ export default {
     unitModelToSelect(old) {
       if (this.idItem !== 0) {
         this.unitModelDefault = old;
+      }
+    },
+    unitModelToSelectMulti(old) {
+      if (this.idItem !== 0) {
+        this.unitModelDefaultMulti = old;
       }
     },
     unitsTimeModelToSelect(old) {

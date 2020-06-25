@@ -55,7 +55,6 @@ export default {
   },
   data() {
     return {
-      // items: ['Pressure', 'Temperature'],
       responsiveCharts: true,
       // datos a graficar
       itemsToGraphModel: [],
@@ -120,10 +119,6 @@ export default {
     },
   },
   watch: {
-    // watcher para el cambio de tab
-    tab() {
-      this.responsiveCharts = !this.responsiveCharts;
-    },
     sensorsList([sensorsP, sensorsT]) {
       // console.log([sensorsP, sensorsT]);
       this.updateData({ sensorsP, sensorsT });

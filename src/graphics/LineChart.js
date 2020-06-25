@@ -14,13 +14,13 @@ export default {
 				this.$data._chart.destroy();
 				this.renderChart(this.chartData, newOption);
 
-				if (this.$refs.canvas.width > 0) {
+				/* if (this.$refs.canvas.width > 0) {
 					canvasWidth = this.$refs.canvas.width;
 				}
 				if (this.$refs.canvas.height > 0) {
 					canvasHeight = this.$refs.canvas.height;
-				}
-				this.$refs.canvas.style.cssText = `display: block; width: ${canvasWidth}px; height: ${canvasHeight}px;`;
+				} */
+				// this.$refs.canvas.style.cssText = `display: block; width: ${canvasWidth}px; height: ${canvasHeight}px;`;
 				// console.log(this.$refs.canvas.style.cssText);
 			},
 			deep: true

@@ -3,33 +3,29 @@
     <!-- <pre>{{ tabsSelectApi }}</pre> -->
     <v-card>
       <v-card-title class="text-center justify-center py-6">
-        <h2 class="font-weight-bold display-5">{{ items[tab] }}</h2>
+        <h2 class="font-weight-bold display-5">Pressure & Temperature</h2>
+        <pre>{{ tag }}</pre>
       </v-card-title>
-      <v-tabs v-model="tab">
-        <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="tab">
-        <v-tab-item v-for="(item, index) in sensorsList" :key="`${index}-tab`">
-          <v-container class="grey lighten-5" :fluid="true">
-            <v-row justify="space-around">
-              <v-col cols="12">
-                <cstm-line
-                  :chartData="itemsToGraphModel[tab].data"
-                  :defaultStatus="itemsToGraphModel[tab].status"
-                  :sensorModelToSelect="sensorsDefaultToGraph[tab]"
-                  :unitModelToSelect="unitToGraph[tab]"
-                  :unitsTimeModelToSelect="unitsTimeToGraph[tab]"
-                  :sensorsSelect="sensorsToSelect[tab]"
-                  :unitSelect="unitsToSelect[tab]"
-                  :unitTimeSelect="unitsTimeToSelect"
-                  :responsiveChart="responsiveCharts"
-                  @sensorSelected="itemSelected"
-                ></cstm-line>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-tab-item>
-      </v-tabs-items>
+      <v-container class="grey lighten-5" :fluid="true">
+        <v-row justify="center">
+          <v-col cols="12">
+            <cstm-line
+              :idItem="sensorLeftDef.id"
+              :sensorsSelect="itemsToGraphModel"
+              :sensorModelToSelect="sensorLeftDef"
+              :unitModelToSelect="unitToGraph[leftUnitSelect]"
+              :unitSelect="unitsToSelect[leftUnitSelect]"
+              :unitsTimeModelToSelect="unitsTimeToGraph[0]"
+              :unitTimeSelect="unitsTimeToSelect"
+              :chartData="sensorLeftDef.data"
+              :defaultStatus="itemsToGraphModel[0].status"
+              :responsiveChart="responsiveCharts"
+              @sensorSelected="leftSensorGraph"
+              @unitSelected="unitS"
+            ></cstm-line>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
   </v-container>
 </template>
@@ -46,35 +42,35 @@ export default {
   },
   data() {
     return {
-      tab: 0,
-      unit: '',
-      time: '',
-      items: ['Pressure', 'Temperature'],
+      tag: 'PSI',
       responsiveCharts: true,
-      itemsToGraphModel: [
-        ...Array.from(Array(2), () => {
-          return {
-            status: {},
-            data: {},
-          };
-        }),
-      ],
-      // default model for sensor
-      sensorsDefaultToGraph: [{}, {}],
-      // select para los sensores
-      sensorsToSelect: [[], []],
+      itemsToGraphModel: [],
+      leftUnitSelect: 0,
+      leftSensorDefault: {},
     };
   },
+  computed: {
+    sensorLeftDef() {
+      return this.leftSensorDefault;
+    },
+  },
   methods: {
-    itemSelected(graph) {
-      const getItem = this.sensorsList[this.tab].find((d) => {
-        return d.id === graph.id;
-      });
-      this.itemsToGraphModel[this.tab] = getItem;
-      this.responsiveCharts = !this.responsiveCharts;
+    leftSensorGraph(sensor) {
+      this.leftSensorDefault = sensor;
+      const { name } = sensor;
+      if (name.includes('SensorP')) {
+        this.leftUnitSelect = 0;
+        if (this.tag === 'ºF' || this.tag === 'ºF') this.tag = 'PSI';
+      } else {
+        this.leftUnitSelect = 1;
+        if (this.tag !== 'ºF') this.tag = 'ºC';
+      }
+    },
+    unitS({ selectedItem: { tag } }) {
+      this.tag = tag;
     },
     updateArraySensors({ dataSocket, localSensors }) {
-      // console.log('SENSORS: ', dataSocket);
+      // console.log(localSensors);
       return localSensors.map((s) => {
         const {
           status: { title },
@@ -85,60 +81,34 @@ export default {
           },
         );
         const { datasets } = findDataSocket.data;
-
-        s.data = {
-          datasets,
-        };
+        if (this.tag !== 'ºC' && this.tag !== 'PSI') {
+          console.log('convertir', datasets);
+        }
+        s.data = { datasets };
         // console.log('FIND: ', findDataSocket);
         return s;
       });
     },
     updateData({ sensorsP, sensorsT }) {
-      const [pSensors, tSensors] = this.sensorsToSelect;
-
-      const pUpdatedSensors = this.updateArraySensors({
-        dataSocket: sensorsP,
-        localSensors: pSensors,
+      const updatedSensors = this.updateArraySensors({
+        dataSocket: [...sensorsP, ...sensorsT],
+        localSensors: this.itemsToGraphModel,
       });
-
-      const tUpdatedSensors = this.updateArraySensors({
-        dataSocket: sensorsT,
-        localSensors: tSensors,
-      });
-      this.sensorsToSelect = [pUpdatedSensors, tUpdatedSensors];
-      // console.log(this.sensorsToSelect );
+      // console.log(pUpdatedSensors);
+      this.itemsToGraphModel = updatedSensors;
     },
   },
   watch: {
-    tab(tabSelect) {
-      this.responsiveCharts = !this.responsiveCharts;
-      this.unit = this.unitToGraph[tabSelect].tag;
-      this.time = this.unitsTimeToGraph[tabSelect].tag;
-    },
     sensorsList([sensorsP, sensorsT]) {
       this.updateData({ sensorsP, sensorsT });
       // this.updateArraySensors(sensorsT);
     },
   },
   beforeMount() {
-    const [forTabOne] = this.sensorsList[0];
-    const [forTabTwo] = this.sensorsList[1];
-    this.itemsToGraphModel[0] = forTabOne;
-    this.itemsToGraphModel[1] = forTabTwo;
-    this.sensorsDefaultToGraph[0] = {
-      id: forTabOne.id,
-      name: forTabOne.name,
-    };
-    this.sensorsDefaultToGraph[1] = {
-      id: forTabTwo.id,
-      name: forTabTwo.name,
-    };
-    this.unit = this.unitToGraph[this.tab].tag;
-    this.time = this.unitsTimeToGraph[this.tab].tag;
-
-    const [forTabOneG, forTabTwoG] = this.sensorsList;
-    this.sensorsToSelect[0] = forTabOneG;
-    this.sensorsToSelect[1] = forTabTwoG;
+    const [pSensors, tSensors] = this.sensorsList;
+    this.itemsToGraphModel = [...pSensors, ...tSensors];
+    const [leftS] = pSensors;
+    this.leftSensorDefault = leftS;
   },
 };
 </script>

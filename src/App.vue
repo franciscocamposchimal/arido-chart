@@ -5,7 +5,7 @@
       @openDialog="openDialog"
     ></Navigation>
     <v-content>
-      <!-- <pre>{{ testInProgress }}</pre> -->
+      <!-- <pre>{{ sensorsAPIList }}</pre> -->
       <router-view :sensorsList="sensorsAPIList"></router-view>
       <TestDialog
         :dialog="isOpenDialog"
