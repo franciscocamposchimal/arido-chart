@@ -49,15 +49,17 @@ export default {
       this.isOpenDialog = false;
       await this.$store.dispatch('createTest', newTest);
     },
-    setDataSensors({ date, dataSocket, localSensors }) {
+    setDataSensors({ type, sockUnitsData, localSensors }) {
+      // console.log('sockUnitsData ', sockUnitsData);
       localSensors = localSensors.map((s) => {
         const {
           status: { title },
-          data: {
+          /* data: {
             datasets: [{ data: datos }],
-          },
+          }, */
+          units,
         } = s;
-        dataSocket.forEach(({ name, val }) => {
+        /* dataSocket.forEach(({ name, val }) => {
           if (name === title) {
             datos.push({
               x: this.$moment(date, 'DD/MM/YYYY h:mm:ss a'),
@@ -67,11 +69,59 @@ export default {
               datos.shift();
             }
           }
-        });
-        s.data.datasets[0].data = datos;
+        }); */
+        if (type === 'T') {
+          const fUnitTData = sockUnitsData.fSensorList.find(
+            (sensorSock) => sensorSock.name === title,
+          );
+          const cUnitTData = sockUnitsData.cSensorList.find(
+            (sensorSock) => sensorSock.name === title,
+          );
+
+          units.fSensorList.data.push(fUnitTData.val);
+          units.cSensorList.data.push(cUnitTData.val);
+
+          if (units.fSensorList.data.length > 30) {
+            units.fSensorList.data.shift();
+            units.cSensorList.data.shift();
+          }
+        } else {
+          const unitPDataPa = sockUnitsData.paSensorList.find(
+            (sensorSock) => sensorSock.name === title,
+          );
+          const unitPDataMPa = sockUnitsData.mpaSensorList.find(
+            (sensorSock) => sensorSock.name === title,
+          );
+          const unitPDataPSI = sockUnitsData.psiSensorList.find(
+            (sensorSock) => sensorSock.name === title,
+          );
+
+          units.paSensorList.data.push(unitPDataPa.val);
+          units.mpaSensorList.data.push(unitPDataMPa.val);
+          units.psiSensorList.data.push(unitPDataPSI.val);
+
+          if (units.paSensorList.data.length > 30) {
+            units.paSensorList.data.shift();
+            units.mpaSensorList.data.shift();
+            units.psiSensorList.data.shift();
+          }
+        }
+        s.units = units;
+        // s.data.datasets[0].data = datos;
         return s;
       });
       return localSensors;
+    },
+    setDataConvertSensors({ date, dataSocket }) {
+      return dataSocket.map((sensor) => {
+        return {
+          name: sensor.name,
+          val: {
+            x: this.$moment(date, 'DD/MM/YYYY h:mm:ss a'),
+            y: sensor.val,
+          },
+        };
+      });
     },
   },
   computed: {
@@ -96,9 +146,13 @@ export default {
       const { sensorsP, sensorsT } = this.sensorsList;
       this.sensorsData = this.sensorsList;
       // console.log(this.sensorsData);
+      /* console.log([
+        this.createArrayToGraphP(sensorsP),
+        this.createArrayToGraphT(sensorsT),
+      ]); */
       this.$store.commit('SET_SENSOR_API', [
-        this.createArrayToGraph(sensorsP),
-        this.createArrayToGraph(sensorsT),
+        this.createArrayToGraphP(sensorsP),
+        this.createArrayToGraphT(sensorsT),
       ]);
     },
   },
@@ -109,18 +163,47 @@ export default {
     disconnect() {
       // console.log('disconnected');
     },
-    SENSORS_DATA({ date, sensorsP, sensorsT }) {
-      // console.log('SENSORS_DATA', date);
+    SENSORS_DATA({
+      date,
+      sensorsP,
+      sensorsT,
+      sensorsPa,
+      sensorsMPa,
+      sensorsF,
+    }) {
       if (!this.lodash.isEmpty(this.sensorsList)) {
         const [pSensors, tSensors] = this.sensorsAPIList;
-        const pSensorResult = this.setDataSensors({
+
+        // Units converted
+        const psiSensorList = this.setDataConvertSensors({
           date,
           dataSocket: sensorsP,
+        });
+        const cSensorList = this.setDataConvertSensors({
+          date,
+          dataSocket: sensorsT,
+        });
+        const paSensorList = this.setDataConvertSensors({
+          date,
+          dataSocket: sensorsPa,
+        });
+        const mpaSensorList = this.setDataConvertSensors({
+          date,
+          dataSocket: sensorsMPa,
+        });
+        const fSensorList = this.setDataConvertSensors({
+          date,
+          dataSocket: sensorsF,
+        });
+        // create arrays
+        const pSensorResult = this.setDataSensors({
+          type: 'P',
+          sockUnitsData: { psiSensorList, paSensorList, mpaSensorList },
           localSensors: pSensors,
         });
         const tSensorResult = this.setDataSensors({
-          date,
-          dataSocket: sensorsT,
+          type: 'T',
+          sockUnitsData: { cSensorList, fSensorList },
           localSensors: tSensors,
         });
         // console.log('SENSORS_DATA', pSensorResult);

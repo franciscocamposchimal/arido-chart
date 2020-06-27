@@ -17,7 +17,8 @@
               :unitSelect="unitsToSelect[0]"
               :unitSelectMulti="unitsToSelect[1]"
               :unitTimeSelect="unitsTimeToSelect"
-              :responsiveChart="responsiveCharts"
+              @unitSelected="unitSelectedP"
+              @unitSelectedMulti="unitSelectedT"
             ></cstm-line>
           </v-col>
         </v-row>
@@ -38,10 +39,9 @@ export default {
   },
   data() {
     return {
-      unit: '',
+      unitP: 'PSI',
+      unitT: 'ºC',
       time: '',
-      items: ['Pressure', 'Temperature'],
-      responsiveCharts: true,
       // datos por tab de grafica.
       itemsToGraph: [
         {
@@ -61,6 +61,14 @@ export default {
     };
   },
   methods: {
+    unitSelectedP({ selectedItem: { tag } }) {
+      this.unitP = tag;
+      // console.log(selectedItem);
+    },
+    unitSelectedT({ selectedItem: { tag } }) {
+      this.unitT = tag;
+      // console.log(this.unitT);
+    },
     updateArraySensors({ dataSocket, localSensors }) {
       const {
         data: { datasets },
@@ -69,12 +77,35 @@ export default {
       const newDatasets = datasets.map((s) => {
         const { label /* data: datos */ } = s;
 
-        const findDataSocket = dataSocket.find(({ name }) => {
-          return name === label;
-        });
-        const {
+        const findDataSocket = dataSocket.find(({ name }) => name === label);
+
+        let {
           datasets: [{ data: dataSock }],
         } = findDataSocket.data;
+
+        if (this.unitT === 'ºF') {
+          const includesT = findDataSocket.name.includes('SensorT');
+          if (includesT) dataSock = findDataSocket.units.fSensorList.data;
+        }
+        if (this.unitT === 'ºC') {
+          const includesT = findDataSocket.name.includes('SensorT');
+          if (includesT) dataSock = findDataSocket.units.cSensorList.data;
+        }
+
+        if (this.unitP === 'PA') {
+          const includesP = findDataSocket.name.includes('SensorP');
+          if (includesP) dataSock = findDataSocket.units.paSensorList.data;
+        }
+        if (this.unitP === 'MPa') {
+          const includesP = findDataSocket.name.includes('SensorP');
+          if (includesP) dataSock = findDataSocket.units.mpaSensorList.data;
+        }
+        if (this.unitP === 'PSI') {
+          const includesP = findDataSocket.name.includes('SensorP');
+          if (includesP) dataSock = findDataSocket.units.psiSensorList.data;
+        }
+        // console.log(findDataSocket);
+        // console.log(findDataSocket.units);
         s.data = dataSock;
         return s;
       });
@@ -99,10 +130,7 @@ export default {
   },
   watch: {
     sensorsList([sensorsP, sensorsT]) {
-      // console.log(sensorsP);
       this.updateData({ sensorsP, sensorsT });
-      // const [pSensors] = this.itemsToGraph;
-      // console.log(pSensors);
     },
   },
   beforeMount() {
@@ -136,7 +164,7 @@ export default {
       ),
     ];
     // console.log('itemsToGraph: ',this.itemsToGraph);
-    this.unit = this.unitToGraph[0].tag;
+    // this.unit = this.unitToGraph[0].tag;
     this.time = this.unitsTimeToGraph[0].tag;
   },
 };

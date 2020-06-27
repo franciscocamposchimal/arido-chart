@@ -3,14 +3,14 @@
 export const methodsGraphMix = {
   methods: {
     // datos random
-    fillData(name, hours, colorMax) {
+    fillData(name, colorMax) {
       const hexColor = this.getRandomHexColor(colorMax);
       return {
         label: name,
         backgroundColor: hexColor,
         borderColor: hexColor,
         fill: false,
-        data: this.getRandomInt(hours, 100, 500),
+        data: [],
       };
     },
     fillDataZero(name, colorMax) {
@@ -43,7 +43,7 @@ export const methodsGraphMix = {
       const n = (Math.random() * 0xfffff * colorMax).toString(16);
       return `#${n.slice(0, 6)}`;
     },
-    createArrayToGraph(sensors) {
+    createArrayToGraphT(sensors) {
       return sensors.map(({ id, name, tag }) => {
         return {
           id,
@@ -56,6 +56,47 @@ export const methodsGraphMix = {
           data: {
             // labels: [],
             datasets: [this.fillDataZero(tag, 5000000)],
+          },
+          units: {
+            cSensorList: {
+              name: tag,
+              data: [],
+            },
+            fSensorList: {
+              name: tag,
+              data: [],
+            },
+          },
+        };
+      });
+    },
+    createArrayToGraphP(sensors) {
+      return sensors.map(({ id, name, tag }) => {
+        return {
+          id,
+          name,
+          status: {
+            title: tag,
+            icon: 'mdi-flash',
+            color: 'green',
+          },
+          data: {
+            // labels: [],
+            datasets: [this.fillDataZero(tag, 5000000)],
+          },
+          units: {
+            psiSensorList: {
+              name: tag,
+              data: [],
+            },
+            paSensorList: {
+              name: tag,
+              data: [],
+            },
+            mpaSensorList: {
+              name: tag,
+              data: [],
+            },
           },
         };
       });

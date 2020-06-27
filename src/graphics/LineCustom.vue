@@ -129,11 +129,6 @@ export default {
       default: () => [],
     },
     // table
-    responsiveChart: {
-      type: Boolean,
-      required: true,
-      default: true,
-    },
     isTwoY: {
       type: Boolean,
       default: false,
@@ -145,7 +140,6 @@ export default {
       unit: '',
       unitMulti: '',
       time: 'minute',
-      responsive: true,
       // selected defautl sensot
       sensorModelDefault: {},
       // selected default unit
@@ -170,16 +164,12 @@ export default {
     unitSelectedMulti(selectedItem) {
       // console.log('emit-selectedItem ', selectedItem);
       this.unitMulti = selectedItem.tag;
+      this.$emit('unitSelectedMulti', { selectedItem, id: this.idItem });
     },
     // evento para el cambio de tiempo
     timeSelected(selectedItem) {
       this.time = selectedItem.tag;
       this.$emit('timeSelected', { selectedItem, id: this.idItem });
-    },
-    // click en la grafica
-    clickEventListener() {
-      // console.log('point ', point);
-      // console.log('elements ', elements);
     },
   },
   computed: {
@@ -254,7 +244,7 @@ export default {
     },
     optionsChart() {
       return {
-        responsive: this.responsive,
+        responsive: true,
         maintainAspectRatio: false,
         // onClick: this.clickEventListener,
         // events: ['click'],
@@ -285,7 +275,6 @@ export default {
     },
   },
   mounted() {
-    this.responsive = true;
     this.unit = this.unitModelToSelect.tag;
     if (this.isTwoY) this.unitMulti = this.unitModelToSelectMulti.tag;
     this.time = this.unitsTimeModelToSelect.tag;
@@ -296,13 +285,6 @@ export default {
     // this.chartData = this.dataToGraph;
   },
   watch: {
-    responsiveChart() {
-      if (this.responsive) {
-        this.responsive = false;
-        this.responsive = true;
-      }
-      this.responsive = true;
-    },
     unitModelToSelect(old) {
       if (this.idItem !== 0) {
         this.unitModelDefault = old;

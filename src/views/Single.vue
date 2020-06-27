@@ -19,7 +19,6 @@
               :unitTimeSelect="unitsTimeToSelect"
               :chartData="sensorLeftDef.data"
               :defaultStatus="itemsToGraphModel[0].status"
-              :responsiveChart="responsiveCharts"
               @sensorSelected="leftSensorGraph"
               @unitSelected="unitS"
             ></cstm-line>
@@ -32,7 +31,7 @@
 <script>
 import LineCustom from '@/graphics/LineCustom.vue';
 import { dataDefaultMix } from '@/mixins/dataMixin';
-// :width="300" :height="300"
+
 export default {
   name: 'Single',
   props: ['sensorsList'],
@@ -43,7 +42,6 @@ export default {
   data() {
     return {
       tag: 'PSI',
-      responsiveCharts: true,
       itemsToGraphModel: [],
       leftUnitSelect: 0,
       leftSensorDefault: {},
@@ -74,18 +72,48 @@ export default {
       return localSensors.map((s) => {
         const {
           status: { title },
+          units,
         } = s;
         const findDataSocket = dataSocket.find(
           ({ status: { title: titleSock } }) => {
             return titleSock === title;
           },
         );
+        /* console.log(
+          `title ${title},`,
+          `findDataSocket ${findDataSocket.status.title}`,
+          `selected ${this.leftSensorDefault.status.title}`,
+        ); */
         const { datasets } = findDataSocket.data;
-        if (this.tag !== 'ºC' && this.tag !== 'PSI') {
-          console.log('convertir', datasets);
+
+        // press sensors
+        if (this.tag === 'PA') {
+          const findUnit =
+            units.paSensorList?.name === this.leftSensorDefault.status.title;
+          if (findUnit) datasets[0].data = units.paSensorList.data;
+        }
+        if (this.tag === 'MPa') {
+          const findUnit =
+            units.mpaSensorList?.name === this.leftSensorDefault.status.title;
+          if (findUnit) datasets[0].data = units.mpaSensorList.data;
+        }
+        if (this.tag === 'PSI') {
+          const findUnit =
+            units.psiSensorList?.name === this.leftSensorDefault.status.title;
+          if (findUnit) datasets[0].data = units.psiSensorList.data;
+        }
+        // temp sensors
+        if (this.tag === 'ºF') {
+          const findUnit =
+            units.fSensorList?.name === this.leftSensorDefault.status.title;
+          if (findUnit) datasets[0].data = units.fSensorList.data;
+        }
+        if (this.tag === 'ºC') {
+          const findUnit =
+            units.cSensorList?.name === this.leftSensorDefault.status.title;
+          if (findUnit) datasets[0].data = units.cSensorList.data;
         }
         s.data = { datasets };
-        // console.log('FIND: ', findDataSocket);
         return s;
       });
     },
@@ -100,8 +128,9 @@ export default {
   },
   watch: {
     sensorsList([sensorsP, sensorsT]) {
-      this.updateData({ sensorsP, sensorsT });
-      // this.updateArraySensors(sensorsT);
+      if (this.itemsToGraphModel.length > 0) {
+        this.updateData({ sensorsP, sensorsT });
+      }
     },
   },
   beforeMount() {
