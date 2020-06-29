@@ -104,8 +104,6 @@ export default {
           const includesP = findDataSocket.name.includes('SensorP');
           if (includesP) dataSock = findDataSocket.units.psiSensorList.data;
         }
-        // console.log(findDataSocket);
-        // console.log(findDataSocket.units);
         s.data = dataSock;
         return s;
       });
@@ -114,7 +112,7 @@ export default {
       localSensors.data = {
         datasets: newDatasets,
       };
-
+      // console.log('LOCALDATA ', localSensors.data);
       return localSensors;
     },
     updateData({ sensorsP, sensorsT }) {
@@ -148,6 +146,8 @@ export default {
           },
         }) => {
           getData.label = name;
+          getData.yAxisID = 'y-axis-0';
+          // console.log(getData);
           return getData;
         },
       ),
@@ -159,6 +159,7 @@ export default {
           },
         }) => {
           getData.label = name;
+          getData.yAxisID = 'y-axis-1';
           return getData;
         },
       ),

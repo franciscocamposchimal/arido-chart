@@ -26,21 +26,21 @@
           <v-card-title>Utils</v-card-title>
           <v-divider></v-divider>
           <v-row justify="center" class="pa-5">
-            <v-col cols="4">
+            <v-col :cols="colsResponsiveSensors">
               <SensorCard
                 typeSensor="TEMPERATURE"
                 :cardList="sensorsList.sensorsT"
                 @sensorToEdit="editSensor"
               ></SensorCard>
             </v-col>
-            <v-col cols="4">
+            <v-col :cols="colsResponsiveSensors">
               <SensorCard
                 typeSensor="PRESSURE"
                 :cardList="sensorsList.sensorsP"
                 @sensorToEdit="editSensor"
               ></SensorCard>
             </v-col>
-            <v-col cols="4">
+            <v-col :cols="colsResponsive">
               <TestCard
                 :testList="testList"
                 @testToDelete="openModal"
@@ -140,6 +140,30 @@ export default {
       'instrumentalistsList',
       'getApiResponse',
     ]),
+    colsResponsive() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return '12';
+        case 'sm':
+        case 'md':
+        case 'lg':
+        case 'xl':
+        default:
+          return '4';
+      }
+    },
+    colsResponsiveSensors() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return '6';
+        case 'sm':
+        case 'md':
+        case 'lg':
+        case 'xl':
+        default:
+          return '4';
+      }
+    },
   },
   mounted() {
     this.getTests();

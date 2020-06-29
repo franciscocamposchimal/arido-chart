@@ -178,7 +178,8 @@ export default {
         return [
           {
             // display: true,
-            id: 'A',
+            stacked: true,
+            id: 'y-axis-0',
             position: 'left',
             scaleLabel: {
               display: true,
@@ -203,15 +204,14 @@ export default {
       return [
         {
           // display: true,
-          id: 'A',
+          type: 'linear',
+          id: 'y-axis-0',
           position: 'left',
           scaleLabel: {
             display: true,
             labelString: this.unit,
           },
           ticks: {
-            // suggestedMin: 0,
-            // suggestedMax: 500,
             beginAtZero: true,
             stepSize: 50,
             /* callback: (value) => {
@@ -226,15 +226,14 @@ export default {
         },
         {
           // display: true,
-          id: 'B',
+          type: 'linear',
+          id: 'y-axis-1',
           position: 'right',
           scaleLabel: {
             display: true,
             labelString: this.unitMulti,
           },
           ticks: {
-            // suggestedMin: 0,
-            // suggestedMax: 500,
             beginAtZero: true,
             stepSize: 50,
             /* callback: (value) => {

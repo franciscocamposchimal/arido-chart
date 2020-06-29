@@ -6,7 +6,7 @@
           <v-card-title>Temperature sensors</v-card-title>
           <v-row justify="center" class="pa-5">
             <v-col
-              cols="3"
+              :cols="colsResponsive"
               v-for="(item, index) in sensorsT"
               :key="`t-${index}`"
             >
@@ -19,7 +19,7 @@
           <v-card-title>Pressure sensors</v-card-title>
           <v-row justify="center" class="pa-5">
             <v-col
-              cols="3"
+              cols="colsResponsive"
               v-for="(item, index) in sensorsP"
               :key="`p-${index}`"
             >
@@ -49,6 +49,20 @@ export default {
       sensorsT: [],
       sensorsP: [],
     };
+  },
+  computed: {
+    colsResponsive() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return '12';
+        case 'sm':
+        case 'md':
+        case 'lg':
+        case 'xl':
+        default:
+          return '4';
+      }
+    },
   },
   sockets: {
     SENSORS_DATA(data) {

@@ -7,7 +7,7 @@
       </v-card-title>
       <v-container class="grey lighten-5" :fluid="true">
         <v-row justify="center">
-          <v-col cols="6">
+          <v-col :cols="colsResponsive">
             <cstm-line
               :idItem="sensorLeftDef.id"
               :sensorsSelect="itemsToGraphModel"
@@ -22,7 +22,7 @@
               @unitSelected="leftUnitS"
             ></cstm-line>
           </v-col>
-          <v-col cols="6">
+          <v-col :cols="colsResponsive">
             <cstm-line
               :idItem="sensorRiDef.id"
               :sensorsSelect="itemsToGraphModel"
@@ -79,6 +79,18 @@ export default {
     },
     sensorRiDef() {
       return this.riSensorDefault;
+    },
+    colsResponsive() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return '12';
+        case 'sm':
+        case 'md':
+        case 'lg':
+        case 'xl':
+        default:
+          return '6';
+      }
     },
   },
   methods: {
