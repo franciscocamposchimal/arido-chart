@@ -259,29 +259,16 @@ export default {
           intersect: false,
         },
         plugins: {
-          /* zoom: {
+          zoom: {
+            pan: {
+              enabled: true,
+              mode: 'xy',
+            },
             zoom: {
               enabled: true,
-              drag: true,
-
               mode: 'xy',
-
-              speed: 0.1,
-
-              threshold: 2,
-
-              sensitivity: 3,
-
-              // Function called while the user is zooming
-              onZoom: () => {
-                console.log(`I'm zooming!!!`);
-              },
-              // Function called once zooming is completed
-              onZoomComplete: () => {
-                console.log(`I was zoomed!!!`);
-              },
             },
-          }, */
+          },
           /* crosshair: {
             line: {
               color: '#FF0000', // crosshair line color

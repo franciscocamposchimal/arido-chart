@@ -2,7 +2,7 @@
 import { Line, mixins } from 'vue-chartjs';
 // import ChartJSPluginDatalabels from 'chartjs-plugin-datalabels';
 // import CorssHair from 'chartjs-plugin-crosshair';
-// import ZoomChart from 'chartjs-plugin-zoom';
+import zoom from 'chartjs-plugin-zoom';
 
 const { reactiveProp } = mixins;
 export default {
@@ -20,6 +20,7 @@ export default {
     },
   },
   mounted() {
+    this.addPlugin(zoom);
     this.renderChart(this.chartData, this.options);
   },
 };

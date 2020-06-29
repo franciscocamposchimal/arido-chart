@@ -135,7 +135,28 @@ export default {
   },
   beforeMount() {
     const [pSensors, tSensors] = this.sensorsList;
-    this.itemsToGraphModel = [...pSensors, ...tSensors];
+    this.itemsToGraphModel = [
+      ...pSensors.map((s) => {
+        const {
+          data: {
+            datasets: [getData],
+          },
+        } = s;
+        getData.yAxisID = 'y-axis-0';
+        s.data.datasets[0] = getData;
+        return s;
+      }),
+      ...tSensors.map((s) => {
+        const {
+          data: {
+            datasets: [getData],
+          },
+        } = s;
+        getData.yAxisID = 'y-axis-0';
+        s.data.datasets[0] = getData;
+        return s;
+      }),
+    ];
     const [leftS] = pSensors;
     this.leftSensorDefault = leftS;
   },

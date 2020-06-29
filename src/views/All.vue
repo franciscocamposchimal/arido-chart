@@ -358,7 +358,28 @@ export default {
        antes de que el componente sea montado a la vista.
     */
     const [pSensors, tSensors] = this.sensorsList;
-    this.itemsToGraphModel = [...pSensors, ...tSensors];
+    this.itemsToGraphModel = [
+      ...pSensors.map((s) => {
+        const {
+          data: {
+            datasets: [getData],
+          },
+        } = s;
+        getData.yAxisID = 'y-axis-0';
+        s.data.datasets[0] = getData;
+        return s;
+      }),
+      ...tSensors.map((s) => {
+        const {
+          data: {
+            datasets: [getData],
+          },
+        } = s;
+        getData.yAxisID = 'y-axis-0';
+        s.data.datasets[0] = getData;
+        return s;
+      }),
+    ];
     const [leftS] = pSensors;
     const [riS] = tSensors;
     this.leftSensorDefault = leftS;
