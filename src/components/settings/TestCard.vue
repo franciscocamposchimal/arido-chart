@@ -3,65 +3,71 @@
     <v-list three-line dense>
       <v-subheader>TESTS</v-subheader>
       <v-divider></v-divider>
-      <v-list-item-group v-model="itemSelected" color="primary">
-        <v-list-item v-for="test in testInternalList" :key="test.id" two-line>
-          <v-list-item-icon>
-            <v-icon>mdi-clipboard-list</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-edit-dialog :return-value.sync="test.name" @save="save(test)">
-                {{ test.name }}
-                <template v-slot:input>
-                  <v-text-field
-                    v-model="test.name"
-                    :rules="[max25chars]"
-                    label="Edit"
-                    single-line
-                    counter
-                  ></v-text-field>
-                </template>
-              </v-edit-dialog>
-            </v-list-item-title>
-            <v-list-item-subtitle
-              v-text="
-                `Init: ${$moment(test.dateInit, 'DD/MM/YYYY HH:mm').format(
-                  'DD/MM/YYYY HH:mm',
-                )}`
-              "
-            ></v-list-item-subtitle>
-            <v-list-item-subtitle
-              v-text="
-                `End: ${
-                  checkDate(test.dateEnd)
-                    ? 'In progress..'
-                    : $moment(test.dateEnd, 'DD/MM/YYYY HH:mm').format(
-                        'DD/MM/YYYY HH:mm',
-                      )
-                }`
-              "
-            ></v-list-item-subtitle>
-            <!-- <v-list-item-subtitle
-              v-text="$moment(test.dateInit, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm')"
-            ></v-list-item-subtitle> -->
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-icon
-              color="green"
-              :disabled="checkDate(test.dateEnd)"
-              @click="fetchData({ name: test.name, id: test.id })"
-            >
-              {{ isDownload ? 'mdi-file-download' : 'mdi-microsoft-excel' }}
-            </v-icon>
-            <v-icon
-              @click="deleteItem(test)"
-              :disabled="checkDate(test.dateEnd)"
-            >
-              {{ checkDate(test.dateEnd) ? 'mdi-delete-off' : 'mdi-delete' }}
-            </v-icon>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list-item-group>
+      <v-virtual-scroll
+        :items="testInternalList"
+        :item-height="80"
+        height="300"
+      >
+        <template v-slot="{ item }">
+          <v-list-item two-line>
+            <v-list-item-icon>
+              <v-icon>mdi-clipboard-list</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>
+                <v-edit-dialog
+                  :return-value.sync="item.name"
+                  @save="save(item)"
+                >
+                  {{ item.name }}
+                  <template v-slot:input>
+                    <v-text-field
+                      v-model="item.name"
+                      :rules="[max25chars]"
+                      label="Edit"
+                      single-line
+                      counter
+                    ></v-text-field>
+                  </template>
+                </v-edit-dialog>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                v-text="
+                  `Init: ${$moment(item.dateInit, 'DD/MM/YYYY HH:mm').format(
+                    'DD/MM/YYYY HH:mm',
+                  )}`
+                "
+              ></v-list-item-subtitle>
+              <v-list-item-subtitle
+                v-text="
+                  `End: ${
+                    checkDate(item.dateEnd)
+                      ? 'In progress..'
+                      : $moment(item.dateEnd, 'DD/MM/YYYY HH:mm').format(
+                          'DD/MM/YYYY HH:mm',
+                        )
+                  }`
+                "
+              ></v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-icon
+                color="green"
+                :disabled="checkDate(item.dateEnd)"
+                @click="fetchData({ name: item.name, id: item.id })"
+              >
+                {{ isDownload ? 'mdi-file-download' : 'mdi-microsoft-excel' }}
+              </v-icon>
+              <v-icon
+                @click="deleteItem(item)"
+                :disabled="checkDate(item.dateEnd)"
+              >
+                {{ checkDate(item.dateEnd) ? 'mdi-delete-off' : 'mdi-delete' }}
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+      </v-virtual-scroll>
     </v-list>
   </v-card>
 </template>
@@ -74,7 +80,6 @@ export default {
   props: ['testList'],
   data() {
     return {
-      itemSelected: null,
       testInternalList: [],
       max25chars: (v) => v.length <= 25 || 'Name too long!',
       json_fields: {
@@ -100,7 +105,7 @@ export default {
           'DD/MM/YYYY HH:mm',
         ) !== 'Fecha invalida'
       ) {
-        this.$emit('testToDelete', data);
+        this.$emit('testToDelete', { table: 'TEST', data });
       }
     },
     checkDate(dateEnd) {

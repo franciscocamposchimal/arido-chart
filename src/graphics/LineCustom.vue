@@ -58,7 +58,6 @@
 <script>
 import LineChart from '@/graphics/LineChart';
 
-// const statusKeys = ['title', 'icon', 'color'];
 export default {
   name: 'LineCustom',
   components: {
@@ -186,8 +185,9 @@ export default {
               labelString: this.unit,
             },
             ticks: {
-              min: 0,
-              max: 500,
+              // suggestedMin: 0,
+              // suggestedMax: 500,
+              beginAtZero: true,
               stepSize: 50,
               /* callback: (value) => {
                   return ;
@@ -210,8 +210,9 @@ export default {
             labelString: this.unit,
           },
           ticks: {
-            min: 0,
-            max: 500,
+            // suggestedMin: 0,
+            // suggestedMax: 500,
+            beginAtZero: true,
             stepSize: 50,
             /* callback: (value) => {
               console.log(value);
@@ -232,8 +233,9 @@ export default {
             labelString: this.unitMulti,
           },
           ticks: {
-            min: 0,
-            max: 500,
+            // suggestedMin: 0,
+            // suggestedMax: 500,
+            beginAtZero: true,
             stepSize: 50,
             /* callback: (value) => {
                   return ;
@@ -246,8 +248,66 @@ export default {
       return {
         responsive: true,
         maintainAspectRatio: false,
+        cutoutPercentage: 80,
         // onClick: this.clickEventListener,
-        // events: ['click'],
+        // events: ['click'],\
+        /* animation: {
+          duration: 0
+        }, */
+        // responsiveAnimationDuration: 0,
+        tooltips: {
+          mode: 'interpolate',
+          intersect: false,
+        },
+        plugins: {
+          /* zoom: {
+            zoom: {
+              enabled: true,
+              drag: true,
+
+              mode: 'xy',
+
+              speed: 0.1,
+
+              threshold: 2,
+
+              sensitivity: 3,
+
+              // Function called while the user is zooming
+              onZoom: () => {
+                console.log(`I'm zooming!!!`);
+              },
+              // Function called once zooming is completed
+              onZoomComplete: () => {
+                console.log(`I was zoomed!!!`);
+              },
+            },
+          }, */
+          /* crosshair: {
+            line: {
+              color: '#FF0000', // crosshair line color
+              width: 1, // crosshair line width
+            },
+            zoom: {
+              enable: false,
+            },
+          }, */
+          /* datalabels: {
+            backgroundColor: (context) => {
+              return context.dataset.backgroundColor;
+            },
+            borderRadius: 5,
+            color: 'white',
+            formatter: (value) => {
+              // console.log(value);
+              return value.y;
+            },
+            font: {
+              weight: 'bold',
+              size: 8,
+            },
+          }, */
+        },
         scales: {
           xAxes: [
             {

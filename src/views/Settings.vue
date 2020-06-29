@@ -11,7 +11,7 @@
                 title="OPERATORS"
                 :staffList="operatorsList"
                 @itemToEdit="editStaff"
-                @itemToDelete="deleteStaff"
+                @itemToDelete="openModal"
               ></StaffCard>
             </v-col>
             <v-col cols="6">
@@ -19,7 +19,7 @@
                 title="INSTRUMENTALISTS"
                 :staffList="instrumentalistsList"
                 @itemToEdit="editStaff"
-                @itemToDelete="deleteStaff"
+                @itemToDelete="openModal"
               ></StaffCard>
             </v-col>
           </v-row>
@@ -43,13 +43,18 @@
             <v-col cols="4">
               <TestCard
                 :testList="testList"
-                @testToDelete="deleteTestItem"
+                @testToDelete="openModal"
               ></TestCard>
             </v-col>
           </v-row>
         </v-card>
       </v-col>
     </v-row>
+    <DeleteModal
+      :isOpen="isOpenDelete"
+      :itemToDelete="itemToDeleteConfirm"
+      @closeModal="modalDeleteHandler"
+    />
   </v-container>
 </template>
 <script>
@@ -57,6 +62,7 @@ import { mapActions, mapGetters } from 'vuex';
 import StaffCard from '../components/settings/StaffCard.vue';
 import TestCard from '../components/settings/TestCard.vue';
 import SensorCard from '../components/settings/SensorCard.vue';
+import DeleteModal from '../components/settings/DeleteModal.vue';
 
 export default {
   name: 'Settings',
@@ -64,12 +70,20 @@ export default {
     TestCard,
     StaffCard,
     SensorCard,
+    DeleteModal,
   },
   data() {
     return {
-      max25chars: (v) => v.length <= 25 || 'Input too long!',
+      isOpenDelete: false,
+      itemToDeleteConfirm: {
+        table: 'NO TABLE',
+        data: {
+          name: '',
+        },
+      },
       operatorSelected: null,
       instrumentalistsSelected: null,
+      max25chars: (v) => v.length <= 25 || 'Input too long!',
     };
   },
   methods: {
@@ -84,6 +98,21 @@ export default {
       'getInstrumentaslists',
       'updateInstrumentalist',
     ]),
+    modalDeleteHandler({ confirm, itemToDelete }) {
+      this.isOpenDelete = false;
+      if (confirm) {
+        if (itemToDelete.table === 'TEST') {
+          this.deleteTestItem({ id: itemToDelete.data.id });
+        } else {
+          this.deleteStaff(itemToDelete);
+        }
+      }
+    },
+    openModal(item) {
+      this.itemToDeleteConfirm = item;
+      this.isOpenDelete = true;
+      // console.log(item);
+    },
     editStaff({ table, data: { id, name } }) {
       if (table === 'OPERATORS') this.updateOperator({ id, name });
       if (table === 'INSTRUMENTALISTS')

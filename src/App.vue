@@ -4,7 +4,7 @@
       :currentTest="testInProgress"
       @openDialog="openDialog"
     ></Navigation>
-    <v-content>
+    <v-main>
       <!-- <pre>{{ sensorsAPIList }}</pre> -->
       <router-view :sensorsList="sensorsAPIList"></router-view>
       <TestDialog
@@ -16,7 +16,7 @@
         @createTest="createTest"
       ></TestDialog>
       <!-- <pre>{{ testList }}</pre> -->
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 
@@ -54,22 +54,8 @@ export default {
       localSensors = localSensors.map((s) => {
         const {
           status: { title },
-          /* data: {
-            datasets: [{ data: datos }],
-          }, */
           units,
         } = s;
-        /* dataSocket.forEach(({ name, val }) => {
-          if (name === title) {
-            datos.push({
-              x: this.$moment(date, 'DD/MM/YYYY h:mm:ss a'),
-              y: val,
-            });
-            if (datos.length > 30) {
-              datos.shift();
-            }
-          }
-        }); */
         if (type === 'T') {
           const fUnitTData = sockUnitsData.fSensorList.find(
             (sensorSock) => sensorSock.name === title,
@@ -145,11 +131,6 @@ export default {
     sensorsList() {
       const { sensorsP, sensorsT } = this.sensorsList;
       this.sensorsData = this.sensorsList;
-      // console.log(this.sensorsData);
-      /* console.log([
-        this.createArrayToGraphP(sensorsP),
-        this.createArrayToGraphT(sensorsT),
-      ]); */
       this.$store.commit('SET_SENSOR_API', [
         this.createArrayToGraphP(sensorsP),
         this.createArrayToGraphT(sensorsT),

@@ -144,7 +144,7 @@ export default {
         });
     },
     deleteTest({ commit, dispatch }, { id }) {
-      console.log('DELETE FIRE ', id);
+      // console.log('DELETE FIRE ', id);
       axios
         .delete(`/test/${id}`)
         .then(({ status }) => {

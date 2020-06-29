@@ -4,7 +4,7 @@
     <v-card>
       <v-card-title class="text-center justify-center py-6">
         <h2 class="font-weight-bold display-5">Pressure & Temperature</h2>
-        <pre>{{ tag }}</pre>
+        <!-- <pre>{{ tag }}</pre> -->
       </v-card-title>
       <v-container class="grey lighten-5" :fluid="true">
         <v-row justify="center">

@@ -7,7 +7,7 @@
       <v-card-text>
         <v-container>
           <v-form ref="testForm" v-model="valid">
-            <v-row>
+            <v-row dense>
               <v-col cols="12" sm="6">
                 <v-text-field
                   v-model="test.name"
@@ -68,7 +68,7 @@
                       <small><b>Temperature sensors *</b></small>
                     </template>
                   </v-checkbox>
-                  <v-row no-gutters>
+                  <v-row no-gutters dense>
                     <v-col
                       v-for="(sensorsT, index) in sensorsData.sensorsT"
                       :key="`stcol-${index}`"
