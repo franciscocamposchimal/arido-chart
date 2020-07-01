@@ -1,6 +1,9 @@
 module.exports = {
-  transpileDependencies: ['vuetify'],
-  /* devServer: {
+	transpileDependencies: [ 'vuetify' ],
+	chainWebpack: (config) => {
+		config.performance.maxEntrypointSize(400000).maxAssetSize(400000);
+	}
+	/* devServer: {
     port: '8080',
     host: '0.0.0.0',
     hotOnly: true,

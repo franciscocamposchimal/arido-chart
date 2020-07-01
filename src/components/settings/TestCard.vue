@@ -3,77 +3,82 @@
     <v-list three-line dense>
       <v-subheader>TESTS</v-subheader>
       <v-divider></v-divider>
-      <v-virtual-scroll
-        :items="testInternalList"
-        :item-height="80"
-        height="300"
-      >
-        <template v-slot="{ item }">
-          <v-list-item two-line>
-            <v-list-item-icon>
-              <v-icon>mdi-clipboard-list</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>
-                <v-edit-dialog
-                  :return-value.sync="item.name"
-                  @save="save(item)"
+      <v-list-item-group v-model="selectedItem">
+        <v-virtual-scroll
+          :items="testInternalList"
+          :item-height="80"
+          height="300"
+        >
+          <template v-slot="{ item }">
+            <v-list-item two-line>
+              <v-list-item-icon>
+                <v-icon>mdi-clipboard-list</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <v-edit-dialog
+                    :return-value.sync="item.name"
+                    @save="save(item)"
+                  >
+                    {{ item.name }}
+                    <template v-slot:input>
+                      <v-text-field
+                        v-model="item.name"
+                        :rules="[max25chars]"
+                        label="Edit"
+                        single-line
+                        counter
+                      ></v-text-field>
+                    </template>
+                  </v-edit-dialog>
+                </v-list-item-title>
+                <v-list-item-subtitle
+                  v-text="
+                    `Init: ${$moment(item.dateInit, 'DD/MM/YYYY HH:mm').format(
+                      'DD/MM/YYYY HH:mm',
+                    )}`
+                  "
+                ></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-text="
+                    `End: ${
+                      checkDate(item.dateEnd)
+                        ? 'In progress..'
+                        : $moment(item.dateEnd, 'DD/MM/YYYY HH:mm').format(
+                            'DD/MM/YYYY HH:mm',
+                          )
+                    }`
+                  "
+                ></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-icon
+                  color="green"
+                  :disabled="checkDate(item.dateEnd)"
+                  @click="fetchData({ name: item.name, id: item.id })"
                 >
-                  {{ item.name }}
-                  <template v-slot:input>
-                    <v-text-field
-                      v-model="item.name"
-                      :rules="[max25chars]"
-                      label="Edit"
-                      single-line
-                      counter
-                    ></v-text-field>
-                  </template>
-                </v-edit-dialog>
-              </v-list-item-title>
-              <v-list-item-subtitle
-                v-text="
-                  `Init: ${$moment(item.dateInit, 'DD/MM/YYYY HH:mm').format(
-                    'DD/MM/YYYY HH:mm',
-                  )}`
-                "
-              ></v-list-item-subtitle>
-              <v-list-item-subtitle
-                v-text="
-                  `End: ${
-                    checkDate(item.dateEnd)
-                      ? 'In progress..'
-                      : $moment(item.dateEnd, 'DD/MM/YYYY HH:mm').format(
-                          'DD/MM/YYYY HH:mm',
-                        )
-                  }`
-                "
-              ></v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-icon
-                color="green"
-                :disabled="checkDate(item.dateEnd)"
-                @click="fetchData({ name: item.name, id: item.id })"
-              >
-                {{ isDownload ? 'mdi-file-download' : 'mdi-microsoft-excel' }}
-              </v-icon>
-              <v-icon
-                @click="deleteItem(item)"
-                :disabled="checkDate(item.dateEnd)"
-              >
-                {{ checkDate(item.dateEnd) ? 'mdi-delete-off' : 'mdi-delete' }}
-              </v-icon>
-            </v-list-item-action>
-          </v-list-item>
-        </template>
-      </v-virtual-scroll>
+                  {{ isDownload ? 'mdi-file-download' : 'mdi-microsoft-excel' }}
+                </v-icon>
+                <v-icon
+                  @click="deleteItem(item)"
+                  :disabled="checkDate(item.dateEnd)"
+                >
+                  {{
+                    checkDate(item.dateEnd) ? 'mdi-delete-off' : 'mdi-delete'
+                  }}
+                </v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </template>
+        </v-virtual-scroll>
+      </v-list-item-group>
     </v-list>
   </v-card>
 </template>
 <script>
 import { mapGetters } from 'vuex';
 import XLSX from 'xlsx';
+// import XLSXChart from 'xlsx-chart';
 
 export default {
   name: 'TestCard',
@@ -92,6 +97,7 @@ export default {
         s6: 'Sensor 6',
       },
       isDownload: false,
+      selectedItem: null,
     };
   },
   methods: {
@@ -148,6 +154,9 @@ export default {
     testList() {
       this.testInternalList = this.testList;
     },
+  },
+  beforeMount() {
+    this.testInternalList = this.testList;
   },
 };
 </script>

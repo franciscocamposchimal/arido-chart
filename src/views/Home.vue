@@ -33,14 +33,14 @@
 </template>
 
 <script>
-import TempSensorCard from '../components/dashboard/TempSensorCard.vue';
-import PreSensorCard from '../components/dashboard/PreSensorCard.vue';
+// import TempSensorCard from '../components/dashboard/TempSensorCard.vue';
+// import PreSensorCard from '../components/dashboard/PreSensorCard.vue';
 
 export default {
   name: 'Home',
   components: {
-    TempSensorCard,
-    PreSensorCard,
+    TempSensorCard: () => import('../components/dashboard/TempSensorCard.vue'),
+    PreSensorCard: () => import('../components/dashboard/PreSensorCard.vue'),
   },
   data() {
     return {

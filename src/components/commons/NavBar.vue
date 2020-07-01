@@ -119,13 +119,13 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-import ClockWatch from './ClockTest.vue';
+// import ClockWatch from './ClockTest.vue';
 
 export default {
   name: 'Navigation',
   props: ['currentTest'],
   components: {
-    ClockWatch,
+    ClockWatch: () => import('./ClockTest.vue'),
   },
   data: () => ({
     drawer: null,

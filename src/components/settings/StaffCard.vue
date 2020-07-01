@@ -78,5 +78,8 @@ export default {
       this.staffInternalList = this.staffList;
     },
   },
+  beforeMount() {
+    this.staffInternalList = this.staffList;
+  },
 };
 </script>

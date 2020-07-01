@@ -23,15 +23,15 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { methodsGraphMix } from '@/mixins/methodsGraph';
-import Navigation from '@/components/commons/NavBar.vue';
-import TestDialog from './components/commons/TestDialog.vue';
+// import Navigation from '@/components/commons/NavBar.vue';
+// import TestDialog from './components/commons/TestDialog.vue';
 
 export default {
   name: 'App',
   mixins: [methodsGraphMix],
   components: {
-    Navigation,
-    TestDialog,
+    Navigation: () => import('@/components/commons/NavBar.vue'),
+    TestDialog: () => import('./components/commons/TestDialog.vue'),
   },
   data: () => ({
     isOpenDialog: false,
@@ -86,7 +86,7 @@ export default {
           units.mpaSensorList.data.push(unitPDataMPa.val);
           units.psiSensorList.data.push(unitPDataPSI.val);
 
-          if (units.paSensorList.data.length > 30) {
+          if (units.paSensorList.data.length > 200) {
             units.paSensorList.data.shift();
             units.mpaSensorList.data.shift();
             units.psiSensorList.data.shift();

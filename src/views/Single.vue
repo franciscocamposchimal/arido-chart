@@ -29,15 +29,15 @@
   </v-container>
 </template>
 <script>
-import LineCustom from '@/graphics/LineCustom.vue';
 import { dataDefaultMix } from '@/mixins/dataMixin';
+// import LineCustom from '@/graphics/LineCustom.vue';
 
 export default {
   name: 'Single',
   props: ['sensorsList'],
   mixins: [dataDefaultMix],
   components: {
-    'cstm-line': LineCustom,
+    'cstm-line': () => import('@/graphics/LineCustom.vue'),
   },
   data() {
     return {

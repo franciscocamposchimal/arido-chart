@@ -56,12 +56,12 @@
   </v-card>
 </template>
 <script>
-import LineChart from '@/graphics/LineChart';
+// import LineChart from '@/graphics/LineChart';
 
 export default {
   name: 'LineCustom',
   components: {
-    LineChart,
+    LineChart: () => import('@/graphics/LineChart'),
   },
   props: {
     // datos de entrada del chart

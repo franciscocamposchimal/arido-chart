@@ -59,18 +59,18 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import StaffCard from '../components/settings/StaffCard.vue';
-import TestCard from '../components/settings/TestCard.vue';
-import SensorCard from '../components/settings/SensorCard.vue';
-import DeleteModal from '../components/settings/DeleteModal.vue';
+// import StaffCard from '../components/settings/StaffCard.vue';
+// import TestCard from '../components/settings/TestCard.vue';
+// import SensorCard from '../components/settings/SensorCard.vue';
+// import DeleteModal from '../components/settings/DeleteModal.vue';
 
 export default {
   name: 'Settings',
   components: {
-    TestCard,
-    StaffCard,
-    SensorCard,
-    DeleteModal,
+    TestCard: () => import('../components/settings/TestCard.vue'),
+    StaffCard: () => import('../components/settings/StaffCard.vue'),
+    SensorCard: () => import('../components/settings/SensorCard.vue'),
+    DeleteModal: () => import('../components/settings/DeleteModal.vue'),
   },
   data() {
     return {
@@ -165,10 +165,10 @@ export default {
       }
     },
   },
-  mounted() {
-    this.getTests();
-    this.getOperators();
-    this.getInstrumentaslists();
+  async mounted() {
+    await this.getTests();
+    await this.getOperators();
+    await this.getInstrumentaslists();
   },
 };
 </script>
