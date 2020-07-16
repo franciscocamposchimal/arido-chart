@@ -9,7 +9,7 @@
       <v-container class="grey lighten-5" :fluid="true">
         <v-row justify="center">
           <v-col cols="12">
-            <cstm-line
+            <!-- <cstm-line
               :idItem="sensorLeftDef.id"
               :sensorsSelect="itemsToGraphModel"
               :sensorModelToSelect="sensorLeftDef"
@@ -21,7 +21,18 @@
               :defaultStatus="itemsToGraphModel[0].status"
               @sensorSelected="leftSensorGraph"
               @unitSelected="unitS"
-            ></cstm-line>
+            ></cstm-line> -->
+            <pre>{{ startDate }} | {{ endDay }} | {{ new Date().getTime() }}</pre>
+            <div id="wrapper">
+              <div id="chart-line2">
+                <apexchart
+                  type="line"
+                  height="230"
+                  :options="chartOptions"
+                  :series="series"
+                ></apexchart>
+              </div>
+            </div>
           </v-col>
         </v-row>
       </v-container>
@@ -37,7 +48,8 @@ export default {
   props: ['sensorsList'],
   mixins: [dataDefaultMix],
   components: {
-    'cstm-line': () => import('@/graphics/LineCustom.vue'),
+    // 'cstm-line': () => import('@/graphics/LineCustom.vue'),
+    apexchart: () => import('vue-apexcharts'),
   },
   data() {
     return {
@@ -45,6 +57,97 @@ export default {
       itemsToGraphModel: [],
       leftUnitSelect: 0,
       leftSensorDefault: {},
+      startDate: this.$moment().valueOf(),
+      endDay: this.$moment()
+        .endOf('day').valueOf(),
+
+      // APEX
+      series: [
+        {
+          name: 'S1',
+          data: [
+            {
+              x: this.$moment().add(4, 's').valueOf(),
+              y: 84,
+            },
+            {
+              x: this.$moment().add(7, 's').valueOf(),
+              y: 56,
+            },
+            {
+              x: this.$moment().add(10, 's').valueOf(),
+              y: 114,
+            },
+            {
+              x: this.$moment().add(13, 's').valueOf(),
+              y: 303,
+            },
+            {
+              x: this.$moment().add(16, 's').valueOf(),
+              y: 122,
+            },
+            {
+              x: this.$moment().add(19, 's').valueOf(),
+              y: 38,
+            },
+            {
+              x: this.$moment().add(22, 's').valueOf(),
+              y: 345,
+            },
+            {
+              x: this.$moment().add(25, 's').valueOf(),
+              y: 250,
+            },
+            {
+              x: this.$moment().add(28, 's').valueOf(),
+              y: 243,
+            },
+          ],
+        },
+      ],
+      // Options
+      chartOptions: {
+        chart: {
+          id: 'chart2',
+          type: 'line',
+          height: 230,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true,
+          },
+          toolbar: {
+            autoSelected: 'zoom',
+          },
+          /* stroke: {
+            curve: 'smooth',
+          }, */
+        },
+        colors: ['#546E7A'],
+        stroke: {
+          width: 3,
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        fill: {
+          opacity: 1,
+        },
+        markers: {
+          size: 0,
+        },
+        yaxis: {
+          title: {
+            text: 'Price',
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+          tickAmount: 1,
+          min: new Date().getTime(),
+          max: new Date().getTime(),
+        },
+      },
     };
   },
   computed: {
@@ -127,14 +230,14 @@ export default {
     },
   },
   watch: {
-    sensorsList([sensorsP, sensorsT]) {
+    /* sensorsList([sensorsP, sensorsT]) {
       if (this.itemsToGraphModel.length > 0) {
         this.updateData({ sensorsP, sensorsT });
       }
-    },
+    }, */
   },
   beforeMount() {
-    const [pSensors, tSensors] = this.sensorsList;
+    /* const [pSensors, tSensors] = this.sensorsList;
     this.itemsToGraphModel = [
       ...pSensors.map((s) => {
         const {
@@ -158,7 +261,7 @@ export default {
       }),
     ];
     const [leftS] = pSensors;
-    this.leftSensorDefault = leftS;
+    this.leftSensorDefault = leftS; */
   },
 };
 </script>

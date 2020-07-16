@@ -21,8 +21,8 @@ require('moment/locale/es');
 moment.locale('es');
 
 // console.log('IP SERVER', window.location.hostname);
-// const serverUrl = `http://${window.location.hostname}:3000`;
-const serverUrl = `https://argosback.arido.dev`;
+const serverUrl = `http://${window.location.hostname}:3000`;
+// const serverUrl = `https://argosback.arido.dev`;
 axios.defaults.baseURL = serverUrl;
 const socket = io(serverUrl);
 

@@ -187,7 +187,7 @@ export default {
           sockUnitsData: { cSensorList, fSensorList },
           localSensors: tSensors,
         });
-        // console.log('SENSORS_DATA', pSensorResult);
+        // console.log('SENSORS_DATA', JSON.stringify(pSensorResult) );
         this.$store.commit('SET_SENSOR_API', [pSensorResult, tSensorResult]);
       }
     },
